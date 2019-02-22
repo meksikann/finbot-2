@@ -1,0 +1,8 @@
+env-7/*
+*.pyc
+*.log
+/app/main/ai/models/nlu/cpd_wl_1.h5
+/app/main/ai/data/tokenizer_data.pkl
+/app/main/ai/data/glove/glove.6B.100d.txt
+*.xml
+/.idea/inspectionProfiles/Project_Default.xml
