@@ -2,18 +2,29 @@ from os.path import join, dirname
 import numpy as np
 import json
 import pickle
+import tensorflow as tf
+from tensorflow import keras
 from tensorflow.python.keras import Sequential, layers
 
 from app.main.utils import logger
+from app.main import constants
 
-NLU_MODEL_PATH = join(dirname(__file__), 'models', 'nlu', 'cpd_wl_1.h5')
-DIALOG_MODEL_PATH = join(dirname(__file__), 'models', 'dialog', 'cpd_dm_1.h5')
-TOKENIZER_DATA_PATH = join(dirname(__file__), 'data', 'tokenizer_data.pkl')
+NLU_MODEL_PATH = join(dirname(__file__), 'models', 'nlu', constants.CPD_WL_1_PATH)
+DIALOG_MODEL_PATH = join(dirname(__file__), 'models', 'dialog', constants.CPD_DM_1_PATH)
+TOKENIZER_DATA_PATH = join(dirname(__file__), 'data', constants.TOKENIZER_PATH)
 
 
 def save_model(model):
     try:
         model.save(NLU_MODEL_PATH)
+    except Exception as err:
+        raise err
+
+
+def load_model_weights(model):
+    try:
+        model.load_weights(NLU_MODEL_PATH)
+        return model
     except Exception as err:
         raise err
 
@@ -51,6 +62,7 @@ def generate_glove_dict(path):
 def get_training_data_from_json(path):
     train_data = []
     classes = []
+    print('========================', path)
 
     training_data = json.loads(open(path).read())
 
@@ -72,14 +84,15 @@ def convert_y_data_to_labels(data, classes):
     return data
 
 
-def get_glove_model(vocab_size, glove_dimension, embed_matrix, max_length):
+def get_glove_model(vocab_size, glove_dimension, embed_matrix, max_length, num_classes):
+    keras.backend.clear_session()
     model = Sequential()
     embed = layers.Embedding(vocab_size, glove_dimension, weights=[embed_matrix], input_length=max_length,
                              trainable=False)
 
     model.add(embed)
     model.add(layers.Flatten())
-    model.add(layers.Dense(1, activation='sigmoid'))
+    model.add(layers.Dense(num_classes, activation=tf.nn.softmax))
 
     return model
 
@@ -90,3 +103,24 @@ def save_tokenizer_data(word_index, classes):
         logger.info('Pickle saved tokenizer data')
     except Exception as err:
         raise err
+
+
+def get_token_data():
+    data = pickle.load(open(TOKENIZER_DATA_PATH, 'rb'))
+    word_index = data['word_index']
+    classes = data['classes']
+
+    return word_index, classes
+
+
+def get_predicted_class(scores, classes):
+    for score in scores:
+        max_score_index = np.argmax(score)
+        print(max_score_index)
+        print("Predicted score: {sc}, Index: {idx}, Class: {cls}".format(
+            sc=score[max_score_index],
+            idx=max_score_index,
+            cls=classes[max_score_index]
+        ))
+
+    return classes[np.argmax(scores[0])]

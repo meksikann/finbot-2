@@ -7,7 +7,18 @@
         "How are you",
         "Is anyone there?",
         "Hello",
-        "Good day"
+        "Good day",
+        "Hi bot",
+        "hello everybody",
+        "hello is anybody there",
+        "hello robot",
+        "hi folks",
+        "hola",
+        "hello sweet boy",
+        "howdy",
+        "Well hello there ;)",
+        "hey, let's talk",
+        "hello it is me again"
       ],
       "responses": [
         "Hello, thanks for visiting",
@@ -24,7 +35,16 @@
         "Goodbye",
         "well good bye",
         "have a nice day",
-        "bye bye"
+        "bye bye",
+        "was nice talking to you",
+        "talk to you later",
+        "farewell",
+        "good night",
+        "goodnight",
+        "see ya",
+        "bye then",
+        "catch you later",
+        "so long"
       ],
       "responses": [
         "See you later, thanks for visiting",
@@ -40,7 +60,32 @@
         "That's helpful",
         "good",
         "great",
-        "this is super cool"
+        "this is super cool",
+        "thanks a bunch for everything",
+        "cool thank you",
+        "great thanks",
+        "amazing, thanks",
+        "cheers bro",
+        "Thank you so much"
+      ],
+      "responses": [
+        "Happy to help!",
+        "Any time!",
+        "My pleasure"
+      ]
+    },
+     {
+      "tag": "purse_total",
+      "patterns": [
+        "what's in my purse",
+        "wallet info",
+        "tell me my total money on my account",
+        "hey I want to know how much money left on my purse",
+        "total funds I have",
+        "I want to get money in purse",
+        "what are my funds?",
+        "give me my total number",
+        "get my account value"
       ],
       "responses": [
         "Happy to help!",

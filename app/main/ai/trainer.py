@@ -7,18 +7,19 @@ from tensorflow.python.keras.preprocessing.text import Tokenizer
 from app.main.utils import logger
 from app.main.ai import helper
 
-from manage import app
+from app.main import constants
 
 
 def train_intent_model():
     logger.info('Start intent model training --------->>>>>>>>>')
     max_length = 10
     glove_dimension = 100
-    epochs = 1000
+    epochs = 30
 
     try:
-        glove_path = app.config['GLOVE_PATH']
-        intents_path = join(dirname(__file__), 'data', 'intents.json')
+        glove_path = constants.GLOVE_PATH
+        verbose = constants.VERBOSE
+        intents_path = join(dirname(__file__), 'data', constants.INTENTS_PATH)
 
         glove_dict = helper.generate_glove_dict(glove_path)
         training_data, classes = helper.get_training_data_from_json(intents_path)
@@ -44,14 +45,16 @@ def train_intent_model():
 
         embed_matrix = helper.get_embedding_matrix(glove_dict, tk.word_index.items(), vocab_size, glove_dimension)
 
-        model = helper.get_glove_model(vocab_size, glove_dimension, embed_matrix, max_length)
+        model = helper.get_glove_model(vocab_size, glove_dimension, embed_matrix, max_length, len(classes))
 
-        model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+        model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 
         model.summary()
 
         # train the model
-        model.fit(padded_utterances, labels, epochs=epochs, verbose=1, )
+        print('x_train: ', padded_utterances)
+        print('labels:', labels)
+        model.fit(padded_utterances, labels, epochs=epochs, verbose=verbose)
 
         # save model weights
         helper.save_model(model)

@@ -5,7 +5,6 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 class Config:
     SECRET_KEY = os.getenv('SECRET_KEY', 'here_custom_secret_key')
-    GLOVE_PATH = 'glove/glove.6B.100d.txt'
     DEBUG = False
 
 

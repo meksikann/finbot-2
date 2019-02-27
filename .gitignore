@@ -1,4 +1,4 @@
-env-7/*
+env-8/*
 *.pyc
 *.log
 /app/main/ai/models/nlu/cpd_wl_1.h5
