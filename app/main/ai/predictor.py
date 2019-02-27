@@ -7,6 +7,10 @@ from app.main import constants
 
 
 def predict_intent(utterance):
+    # import nlu settings
+
+    min_confidence = constants.THRASHOLD
+
     max_length = 10
     glove_dimension = 100
     logger.info('Start intent classification')
@@ -36,9 +40,7 @@ def predict_intent(utterance):
     # predict --------------------------------------------------------
     prediction = model.predict(x_test, verbose=verbose)
 
-    # TODO: use prediction threshold
-    predicted_class = helper.get_predicted_class(prediction, classes)
+    predicted_class = helper.get_predicted_class(min_confidence, prediction, classes)
     print('Predicted intent is:', predicted_class)
 
-    res = predicted_class
-    return res
+    return predicted_class

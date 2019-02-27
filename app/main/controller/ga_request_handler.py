@@ -10,12 +10,14 @@ def handle_qa_request(data):
 
     try:
         # TODO: call predictors and cetra
-        res = "Received text from bot UI: " + utterance
+        result = "Received text from bot UI: "
 
         prediction = predictor.predict_intent(utterance)
-        print(prediction)
 
-        return res
+        if prediction is not None:
+            print(prediction)
+
+        return result
 
     except Exception as err:
         raise err

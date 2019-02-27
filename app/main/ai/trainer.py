@@ -14,7 +14,7 @@ def train_intent_model():
     logger.info('Start intent model training --------->>>>>>>>>')
     max_length = 10
     glove_dimension = 100
-    epochs = 30
+    epochs = 300
 
     try:
         glove_path = constants.GLOVE_PATH

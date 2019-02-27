@@ -92,6 +92,8 @@ def get_glove_model(vocab_size, glove_dimension, embed_matrix, max_length, num_c
 
     model.add(embed)
     model.add(layers.Flatten())
+    model.add(layers.Dense(30, activation=tf.nn.relu)),
+    model.add(layers.Dropout(0.5))
     model.add(layers.Dense(num_classes, activation=tf.nn.softmax))
 
     return model
@@ -113,14 +115,23 @@ def get_token_data():
     return word_index, classes
 
 
-def get_predicted_class(scores, classes):
-    for score in scores:
-        max_score_index = np.argmax(score)
-        print(max_score_index)
-        print("Predicted score: {sc}, Index: {idx}, Class: {cls}".format(
-            sc=score[max_score_index],
-            idx=max_score_index,
-            cls=classes[max_score_index]
-        ))
+def get_predicted_class(threshold, scores, classes):
+    prediction = scores[0]
+    pred_class = None
 
-    return classes[np.argmax(scores[0])]
+    max_score_index = np.argmax(prediction)
+    score = prediction[max_score_index]
+
+    # filter trough threshold
+    if threshold < score:
+        pred_class = classes[max_score_index]
+    else:
+        logger.info('Prediction is lower than threshold')
+
+    print("Predicted score: {sc}, Index: {idx}, Class: {cls}".format(
+        sc=score,
+        idx=max_score_index,
+        cls=pred_class
+    ))
+
+    return pred_class
