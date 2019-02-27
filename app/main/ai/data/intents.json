@@ -74,7 +74,7 @@
         "My pleasure"
       ]
     },
-     {
+    {
       "tag": "purse_total",
       "patterns": [
         "what's in my purse",
@@ -85,7 +85,13 @@
         "I want to get money in purse",
         "what are my funds?",
         "give me my total number",
-        "get my account value"
+        "get my account value",
+        "how much funds are available on my account?",
+        "how much money I own on my purse?",
+        "what is my account balance?",
+        "give me my wallet balance?",
+        "tell me how much money do i have?",
+        "What is the status of my purse?"
       ],
       "responses": [
         "Happy to help!",
