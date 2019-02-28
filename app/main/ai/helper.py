@@ -5,6 +5,7 @@ import pickle
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.python.keras import Sequential, layers
+import yaml
 
 from app.main.utils import logger
 from app.main import constants
@@ -12,6 +13,8 @@ from app.main import constants
 NLU_MODEL_PATH = join(dirname(__file__), 'models', 'nlu', constants.CPD_WL_1_PATH)
 DIALOG_MODEL_PATH = join(dirname(__file__), 'models', 'dialog', constants.CPD_DM_1_PATH)
 TOKENIZER_DATA_PATH = join(dirname(__file__), 'data', constants.TOKENIZER_PATH)
+DIALOG_PATH = join(dirname(__file__), 'data', constants.DIALOG_PATH)
+DOMAIN_PATH = join(dirname(__file__), constants.DOMAIN_PATH)
 
 
 def save_model(model):
@@ -135,3 +138,19 @@ def get_predicted_class(threshold, scores, classes):
     ))
 
     return pred_class
+
+
+def get_domain_data():
+    document = open(DOMAIN_PATH, 'r')
+    parsed = yaml.load(document)
+
+    return parsed
+
+
+def get_dialog_flow_data():
+    document = open(DIALOG_PATH, 'r')
+    dialog = yaml.load(document)
+
+    return dialog
+
+

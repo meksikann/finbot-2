@@ -1,7 +1,7 @@
 {
   "intents": [
     {
-      "tag": "greeting",
+      "tag": "intent_greeting",
       "patterns": [
         "Hi",
         "How are you",
@@ -28,7 +28,7 @@
       "context_set": ""
     },
     {
-      "tag": "goodbye",
+      "tag": "intent_goodbye",
       "patterns": [
         "bye",
         "See you later",
@@ -53,7 +53,7 @@
       ]
     },
     {
-      "tag": "thanks",
+      "tag": "intent_thanks",
       "patterns": [
         "Thanks",
         "Thank you",
@@ -75,7 +75,7 @@
       ]
     },
     {
-      "tag": "purse_total",
+      "tag": "intent_purse_total",
       "patterns": [
         "what's in my purse",
         "wallet info",

@@ -1,6 +1,7 @@
 from app.main.utils import logger
 from app.main.ai import predictor
 
+
 def handle_qa_request(data):
     """handle request from Google assistant: call prediction services to generate next bot response"""
     logger.info('Got request from GA.')

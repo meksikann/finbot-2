@@ -1,0 +1,5 @@
+actions_list:
+- intent_greeting
+- intent_goodbye
+- intent_thanks
+- intent_purse_total

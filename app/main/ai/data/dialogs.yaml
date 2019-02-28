@@ -1,0 +1,11 @@
+# dialogs flows
+
+dialogs:
+- test_1:
+  - intent_1
+  - utter_1
+  - intent_2
+- test_2:
+  - int_1
+  - utter_2
+  - int_3
