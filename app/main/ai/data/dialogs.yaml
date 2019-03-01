@@ -1,5 +1,6 @@
 # dialogs flows
 
+# example dialog
 dialogs:
 - test_1:
   - intent_1
@@ -9,3 +10,38 @@ dialogs:
   - int_1
   - utter_2
   - int_3
+
+
+# mockup dialogs ----------->>>>>>>>>>>
+dialogs:
+- d_001:  # greeting
+  - intent_Hi  # intent_greeting
+  - utter_Hello how can I help you  # utter_how_can _help
+  - intent_What can you do?  # intent_help
+  - utter_I am your personal wallet helper # utter_help_info
+  - intent_Sound great # intent_affirm
+  - utter_YEah 100%.  # utter_affirm
+
+- d_002: # get planned expenses + now buy
+  - intent_Tell me what are my planned expenses this mounth? # intent_get_spend_planned
+  - utter_Well, we have planned to spend 1500 $ inscluding appartment rental and so on...  # utter_spend_planned
+  - intent_I want to by a new laptop # intent_new_buy
+  - utter_want is a price? # utter_ask_price
+  - intent_It's 800$ # intent_inform
+  - action_claculate_new_expence  # action_claculate_new_expence
+  - utter_We have bought Play station 4 this mounth 'it can be financial risky to buy a /leptop/' || (We can affort to by a laptop also) # utter_new_buy_resut
+
+- d_002: # get planned expenses + have'spent
+  - intent_Tell me what are my planned expenses this mounth? # intent_get_spend_planned
+  - utter_Well, we have planned to spend 1500 $ inscluding appartment rental and so on... # utter_spend_planned
+  - itnent_how much I've spent allready? # intent_get_spent
+  - utter_You've spent 1000$ already. # utter_spent
+
+- d_003: # thanks
+  - intent_Thanks # intent_thanks
+  - utter_My pleasure. Dont' hesitate to ping me in case you have some questions. # utter_my_pleasure
+
+- d_004: # goodbye
+  - intent_goodbye  # intent_goodbye
+  - utter_goodbye # utter_goodbye
+

@@ -1,5 +1,6 @@
 from app.main.utils import logger
 from app.main.ai import predictor
+from app.main.ai import helper
 
 
 def handle_qa_request(data):
@@ -13,10 +14,17 @@ def handle_qa_request(data):
         # TODO: call predictors and cetra
         result = "Received text from bot UI: "
 
-        prediction = predictor.predict_intent(utterance)
+        # prediction = predictor.predict_intent(utterance)
+        # if prediction is not None:
+        #     print(prediction)
 
-        if prediction is not None:
-            print(prediction)
+        domain_data = helper.get_domain_data()
+        # print('Domain data:', domain_data)
+
+        dialog_data = helper.get_dialog_flow_data()
+        print('Dialog data: ', dialog_data['dialogs'])
+
+
 
         return result
 
