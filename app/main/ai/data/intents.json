@@ -98,6 +98,17 @@
         "Any time!",
         "My pleasure"
       ]
+    },
+    {
+      "tag": "intent_help",
+      "patterns": [
+       
+      ],
+      "responses": [
+        "Happy to help!",
+        "Any time!",
+        "My pleasure"
+      ]
     }
   ]
 }

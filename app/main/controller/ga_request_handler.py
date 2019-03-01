@@ -19,10 +19,10 @@ def handle_qa_request(data):
         #     print(prediction)
 
         domain_data = helper.get_domain_data()
-        # print('Domain data:', domain_data)
+        print('Domain data:', domain_data['actions_list'])
 
-        dialog_data = helper.get_dialog_flow_data()
-        print('Dialog data: ', dialog_data['dialogs'])
+        # dialog_data = helper.get_dialog_flow_data()
+        # print('Dialog data: ', dialog_data['dialogs'])
 
 
 
