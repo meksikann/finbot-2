@@ -102,13 +102,141 @@
     {
       "tag": "intent_help",
       "patterns": [
-       
+        "help",
+        "help please",
+        "i don't know what i want",
+        "I need some help",
+        "options",
+        "show me the menu",
+        "show me what's possible",
+        "so what can you do",
+        "so what can you help me with?",
+        "what are you good at?",
+        "what can I do here",
+        "what can I do with this bot",
+        "what is this bot for",
+        "cool! can I do something else here?",
+        "help me",
+        "how can you help me",
+        "what can i do here",
+        "what can i do now"
       ],
-      "responses": [
-        "Happy to help!",
-        "Any time!",
-        "My pleasure"
-      ]
+      "responses": []
+    },
+    {
+      "tag": "intent_affirm",
+      "patterns": [
+        "yes",
+        "definitely yes",
+        "always",
+        "absolutely",
+        "i think so",
+        "i'm afraid yes",
+        "yes sir",
+        "yes ma'am",
+        "sure",
+        "ofcourse",
+        "for sure",
+        "yeah that's right",
+        "right",
+        "aha",
+        "go",
+        "got it",
+        "i'm cool with it",
+        "it's ok",
+        "no problem",
+        "good"
+      ],
+      "responses": []
+    },
+    {
+      "tag": "intent_deny",
+      "patterns": [
+        "no",
+        "definitely not",
+        "never",
+        "absolutely not",
+        "i don't think so",
+        "i'm afraid not",
+        "no sir",
+        "no ma'am",
+        "no way",
+        "no sorry",
+        "No, not really.",
+        "nah not for me",
+        "nah",
+        "no and no again",
+        "no go",
+        "no thanks",
+        "decline",
+        "deny",
+        "i decline",
+        "never mind"
+      ],
+      "responses": []
+    },
+    {
+      "tag": "intent_get_spend_planned",
+      "patterns": [
+        "what's planned for the purse",
+        "planned wallet info",
+        "tell me my planned money",
+        "hey I want to know how much money we plan",
+        "total plans I have",
+        "I want to get planned money",
+        "what are my scheduled funds?",
+        "give me my scheduled total number",
+        "get my planed account value",
+        "how much funds scheduled on my account?",
+        "how much money I plan to spend?",
+        "give me my wallet planned amount?",
+        "tell me how much money do i have planned?",
+        "what are my plans for the month?",
+        "what we scheduled for the current month"
+      ],
+      "responses": []
+    },
+    {
+      "tag": "intent_new_buy",
+      "patterns": [
+        "I wanna buy a new laptop",
+        "I have plans to purchase a play station",
+        "buying a bike",
+        "hey I am going to make purchase it's a car",
+        "I would like to get a new chair from store",
+        "I plan to make a buy it is new house",
+        "Take a new laptop",
+        "i should buy a laptop",
+        "I am gonna to shop for a new stuff",
+        "I can afford a new wheel",
+        "I want to purchasing a cow",
+        "I will pay for a new cup",
+                "It would be great to pick up a new host"
+      ],
+      "responses": []
+    },
+     {
+      "tag": "intent_inform",
+      "patterns": [
+      "intent_It's 800$",
+        "hundred dollars",
+        "it is twenty",
+        "four hundreds",
+        "the price is fifty baks",
+        "it will cost me one thousand",
+        "746",
+        "well it is not so expensive - 400 dollars",
+        "it's just fifty dollars",
+        "product price - 30$"
+      ],
+      "responses": []
+    },
+    {
+      "tag": "intent_get_spent",
+      "patterns": [
+      "how much I've already spent?",
+      ],
+      "responses": []
     }
   ]
 }

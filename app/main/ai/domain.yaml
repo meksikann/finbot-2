@@ -3,11 +3,12 @@ actions_list:
 - intent_goodbye
 - intent_thanks
 - intent_purse_total
-- intent_help # TODO: set data in intents.json
-- intent_affirm # TODO: set data in intents.json
-- intent_get_spend_planned # TODO: set data in intents.json
-- intent_new_buy # TODO: set data in intents.json
-- intent_inform # TODO: set data in intents.json
+- intent_help
+- intent_affirm
+- intent_deny
+- intent_get_spend_planned
+- intent_new_buy
+- intent_inform
 - intent_get_spent # TODO: set data in intents.json
 
 - utter_goodbye
