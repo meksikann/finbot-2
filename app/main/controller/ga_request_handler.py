@@ -11,20 +11,16 @@ def handle_qa_request(data):
     utterance = data['utterance']
 
     try:
-        # TODO: call predictors and cetra
-        result = "Received text from bot UI: "
+        result = ""
 
-        # prediction = predictor.predict_intent(utterance)
-        # if prediction is not None:
-        #     print(prediction)
+        # get user intent
+        prediction = predictor.predict_intent(utterance)
+        if prediction is not None:
+            print(prediction)
 
-        domain_data = helper.get_domain_data()
-        print('Domain data:', domain_data['actions_list'])
+        # TODO: get next bot action
 
-        # dialog_data = helper.get_dialog_flow_data()
-        # print('Dialog data: ', dialog_data['dialogs'])
-
-
+        # TODO: if action utterance - send bot response
 
         return result
 

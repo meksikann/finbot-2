@@ -1,15 +1,15 @@
 # dialogs flows
 
 dialogs:
-- d_001:  # greeting
+- flow:  # greeting
   - intent_greeting
-  - utter_how_can _help
+  - utter_how_can_help
   - intent_help
   - utter_help_info
   - intent_affirm
   - utter_affirm
 
-- d_002: # get planned expenses + new buy + cannot buy
+- flow: # get planned expenses + new buy + cannot buy
   - intent_get_spend_planned
   - utter_spend_planned
   - intent_new_buy
@@ -18,17 +18,17 @@ dialogs:
   - action_claculate_new_expence
   - utter_cannot_buy
 
-- d_002: # get planned expenses + have'spent
+- flow: # get planned expenses + have'spent
   - intent_get_spend_planned
   - utter_spend_planned
   - intent_get_spent
   - utter_spent
 
-- d_003: # thanks
+- flow: # thanks
   - intent_thanks
   - utter_my_pleasure
 
-- d_004: # goodbye
+- flow: # goodbye
   - intent_goodbye
   - utter_goodbye
 

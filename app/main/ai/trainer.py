@@ -62,7 +62,7 @@ def train_intent_model():
         # save tokenizer data
         helper.save_tokenizer_data(tk.word_index, classes)
 
-        print('================>>>>>>>>>>>>>>>>TRAINING DONE<<<<<<<<<<<<<<<<<=============')
+        print('================>>>>>>>>>>>>>>>>NLU TRAINING DONE<<<<<<<<<<<<<<<<<=============')
 
     except Exception as err:
         raise err
@@ -70,9 +70,47 @@ def train_intent_model():
 
 def train_dialog_model():
     logger.info('Start train dialog model ----------->>>>>>>>')
+    domain_tokens = dict()
+    training_data = []
+    max_length = 1
 
     try:
-        # TODO: make dialog trainer
+        #
+        # prepare training set with dialog sequences ----------------------------------------------->>>>>>>>>>>
+        # #
+
+        # get domain data to make dialog tokenized
+        domain_data = helper.get_domain_data()
+
+        for idx, action in enumerate(domain_data['actions_list']):
+            # create dict where with action name prop and index as a value (start with 1)
+            domain_tokens[action] = idx + 1
+
+        dialog_data = helper.get_dialog_flow_data()
+
+        for flow in dialog_data['dialogs']:
+            sequence = flow['flow']
+            sequence = list(map(lambda sq: domain_tokens[sq], sequence))
+
+            # get max list length
+            if len(sequence) > max_length:
+                max_length = len(sequence)
+
+            training_data.append(sequence)
+
+        # pad sequences
+        padded_flows = pad_sequences(training_data, maxlen=max_length, padding='post')
+
+
+        #
+        # get LSTM model --------------------------------------------------------------------------->>>>>>>>>>>>
+        # #
+
+        # fit model
+
+        # save model
+
+        # save dialog tokens
         pass
     except Exception as err:
         raise err
