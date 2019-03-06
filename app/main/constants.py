@@ -6,4 +6,5 @@ CPD_DM_1_PATH = 'cpd_dm_1.h5'
 TOKENIZER_PATH = 'tokenizer_data.pkl'
 DOMAIN_PATH = 'domain.yaml'
 DIALOG_PATH = 'dialogs.yaml'
+UTTERANCE_PATH = 'utterances.json'
 THRASHOLD = 0.5

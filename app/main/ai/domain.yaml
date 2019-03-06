@@ -9,16 +9,16 @@ actions_list:
 - intent_get_spend_planned
 - intent_new_buy
 - intent_inform
-- intent_get_spent # TODO: set data in intents.json
+- intent_get_spent
 
 - utter_goodbye
 - utter_my_pleasure
 - utter_spent
-- utter_new_buy_resut
+- utter_cannot_buy
 - utter_ask_price
 - utter_spend_planned
 - utter_affirm
 - utter_help_info
-- utter_how_can _help
+- utter_how_can_help
 
 - action_claculate_new_expence

@@ -1,0 +1,13 @@
+{
+  "utterances": {
+    "utter_goodbye": "Good bye my friend",
+    "utter_my_pleasure": "My pleasure to help you",
+    "utter_spent": "You've spent - ",
+    "utter_cannot_buy": "We have bought Play station 4 this month it can be financial risky to buy also a",
+    "utter_ask_price": "What's a price?",
+    "utter_spend_planned": "Well, we have planned to spend 1500 $ inscluding appartment rental and so on...",
+    "utter_affirm": "Yeah, for sure!",
+    "utter_help_info": "Well, I am you personal wallet assistant, called to help you with private finance management",
+    "utter_how_can_help": "How can I help you my friend?"
+  }
+}

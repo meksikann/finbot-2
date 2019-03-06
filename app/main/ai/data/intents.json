@@ -20,11 +20,7 @@
         "hey, let's talk",
         "hello it is me again"
       ],
-      "responses": [
-        "Hello, thanks for visiting",
-        "Good to see you again",
-        "Hi there, how can I help?"
-      ],
+      "responses": [],
       "context_set": ""
     },
     {
@@ -46,11 +42,7 @@
         "catch you later",
         "so long"
       ],
-      "responses": [
-        "See you later, thanks for visiting",
-        "Have a nice day",
-        "Bye! Come back again soon."
-      ]
+      "responses": []
     },
     {
       "tag": "intent_thanks",
@@ -68,11 +60,7 @@
         "cheers bro",
         "Thank you so much"
       ],
-      "responses": [
-        "Happy to help!",
-        "Any time!",
-        "My pleasure"
-      ]
+      "responses": []
     },
     {
       "tag": "intent_purse_total",
@@ -93,11 +81,7 @@
         "tell me how much money do i have?",
         "What is the status of my purse?"
       ],
-      "responses": [
-        "Happy to help!",
-        "Any time!",
-        "My pleasure"
-      ]
+      "responses": []
     },
     {
       "tag": "intent_help",
@@ -211,14 +195,14 @@
         "I can afford a new wheel",
         "I want to purchasing a cow",
         "I will pay for a new cup",
-                "It would be great to pick up a new host"
+        "It would be great to pick up a new host"
       ],
       "responses": []
     },
-     {
+    {
       "tag": "intent_inform",
       "patterns": [
-      "intent_It's 800$",
+        "intent_It's 800$",
         "hundred dollars",
         "it is twenty",
         "four hundreds",
@@ -234,7 +218,16 @@
     {
       "tag": "intent_get_spent",
       "patterns": [
-      "how much I've already spent?",
+        "how much I've already spent?",
+        "can you tell me what I have spent already?",
+        "spend",
+        "what spent",
+        "how much money i used",
+        "used funds",
+        "hey could you tell me what are my used funds for the current month",
+        "the amount I have spent as of now",
+        "get my funds distributed",
+        "ok I want to get my account spending"
       ],
       "responses": []
     }
