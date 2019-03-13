@@ -154,3 +154,9 @@ def get_dialog_flow_data():
     return dialog
 
 
+def create_dialog_netowrk(look_back):
+    model = Sequential()
+    model.add(layers.LSTM(4, input_shape=(1, look_back)))
+    model.add(layers.Dense(1))
+
+    return model

@@ -73,6 +73,8 @@ def train_dialog_model():
     domain_tokens = dict()
     training_data = []
     max_length = 1
+    look_back = 1
+    time_step = 1
 
     try:
         #
@@ -101,16 +103,45 @@ def train_dialog_model():
         # pad sequences
         padded_flows = pad_sequences(training_data, maxlen=max_length, padding='post')
 
+        # create dataset
+        x_set, y_set = padded_flows[:, :-1], padded_flows[:, 1:]
+
+        print('x:', x_set[1])
+        print('y:', y_set[1])
 
         #
         # get LSTM model --------------------------------------------------------------------------->>>>>>>>>>>>
         # #
+        # model = helper.create_dialog_netowrk(6)
+        # model.compile(loss='mean_squared_error', optimizer='adam')
+        #
+        # model.summary()
 
         # fit model
+        # print(x_set.shape[0])
+        # print(x_set.shape[1])
 
+        # x_set = np.reshape(x_set, (x_set.shape[0], 1, x_set.shape[1]))
+        #
+        # for i in range(len(x_set)):
+        #
+        #     # # print('x_set[i].shape[0]', x_set[i].shape)
+        #     # x = np.reshape(x_set[i], (x_set[i].shape[0], 1, 1))
+        #     # # print('x shape', x)
+        #
+        #     model.fit(x_set[i], y_set[i], epochs=100, batch_size=1, verbose=1)
+
+        # test_x = np.array([
+        #     [3], [3], [3]
+        # ])
+        #
+        # prediction = model.predict(test_x)
+        #
+        # print('prediction:', prediction)
         # save model
 
         # save dialog tokens
-        pass
+        print('================>>>>>>>>>>>>>>>>DIALOG TRAINING DONE<<<<<<<<<<<<<<<<<=============')
+
     except Exception as err:
         raise err
