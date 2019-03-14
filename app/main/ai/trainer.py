@@ -68,13 +68,28 @@ def train_intent_model():
         raise err
 
 
+def split_sequence(sequence, n_steps):
+    X, y = list(), list()
+    for i in range(len(sequence)):
+        # find the end of this pattern
+        end_ix = i + n_steps
+        # check if we are beyond the sequence
+        if end_ix > len(sequence) - 1:
+            break
+        # gather input and output parts of the pattern
+        seq_x, seq_y = sequence[i:end_ix], sequence[end_ix]
+        X.append(seq_x)
+        y.append(seq_y)
+    return np.array(X), np.array(y)
+
+
 def train_dialog_model():
     logger.info('Start train dialog model ----------->>>>>>>>')
     domain_tokens = dict()
     training_data = []
     max_length = 1
-    look_back = 1
-    time_step = 1
+    num_features = 1
+    time_steps = 2
 
     try:
         #
@@ -86,8 +101,7 @@ def train_dialog_model():
 
         for idx, action in enumerate(domain_data['actions_list']):
             # create dict where with action name prop and index as a value (start with 1)
-            domain_tokens[action] = idx + 1
-
+            domain_tokens[action] = (idx + 1)
         dialog_data = helper.get_dialog_flow_data()
 
         for flow in dialog_data['dialogs']:
@@ -102,46 +116,45 @@ def train_dialog_model():
 
         # pad sequences
         padded_flows = pad_sequences(training_data, maxlen=max_length, padding='post')
+        # padded_flows = np.divide(padded_flows, divider)
 
-        # create dataset
-        x_set, y_set = padded_flows[:, :-1], padded_flows[:, 1:]
+        # prepare training set
+        # x_set, y_set = padded_flows[:, :-1], padded_flows[:, 1:]
 
-        print('x:', x_set[1])
-        print('y:', y_set[1])
 
-        #
         # get LSTM model --------------------------------------------------------------------------->>>>>>>>>>>>
         # #
-        # model = helper.create_dialog_netowrk(6)
-        # model.compile(loss='mean_squared_error', optimizer='adam')
-        #
-        # model.summary()
+        model = helper.create_dialog_netowrk(time_steps, num_features)
+        model.compile(loss='mse', optimizer='adam')
+
+        model.summary()
 
         # fit model
-        # print(x_set.shape[0])
-        # print(x_set.shape[1])
+        for idx, sample in enumerate(padded_flows):
+            if idx == 1:
+                print(sample)
+                x_train, y_train = split_sequence(sample, time_steps)
+                print(x_train)
+                print(y_train)
 
-        # x_set = np.reshape(x_set, (x_set.shape[0], 1, x_set.shape[1]))
-        #
-        # for i in range(len(x_set)):
-        #
-        #     # # print('x_set[i].shape[0]', x_set[i].shape)
-        #     # x = np.reshape(x_set[i], (x_set[i].shape[0], 1, 1))
-        #     # # print('x shape', x)
-        #
-        #     model.fit(x_set[i], y_set[i], epochs=100, batch_size=1, verbose=1)
+                x_0 = np.reshape(x_train, (x_train.shape[0], x_train.shape[1], 1))
+                print('reshaped------------->>>>>>>>>')
+                print(x_0)
 
-        # test_x = np.array([
-        #     [3], [3], [3]
-        # ])
-        #
-        # prediction = model.predict(test_x)
-        #
-        # print('prediction:', prediction)
+                print('-----------------------------------------')
+                model.fit(x_0, y_train, epochs=100, batch_size=1, verbose=0)
+
         # save model
 
         # save dialog tokens
         print('================>>>>>>>>>>>>>>>>DIALOG TRAINING DONE<<<<<<<<<<<<<<<<<=============')
+        x_test = np.array([10, 21])
+        x_test = np.reshape(x_test, (1, time_steps, num_features))
+
+        pred = model.predict(x_test, verbose=0)
+        print(pred)
+
+
 
     except Exception as err:
         raise err
