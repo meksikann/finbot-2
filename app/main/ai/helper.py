@@ -32,9 +32,17 @@ def save_dialog_model(model):
         raise err
 
 
-def load_model_weights(model):
+def load_nlp_model_weights(model):
     try:
         model.load_weights(NLU_MODEL_PATH)
+        return model
+    except Exception as err:
+        raise err
+
+
+def load_dm_model_weights(model):
+    try:
+        model.load_weights(DIALOG_MODEL_PATH)
         return model
     except Exception as err:
         raise err
@@ -179,3 +187,12 @@ def save_dialog_options(domain_tokens, num_features, sample_length):
         logger.info('Pickle saved dialog options')
     except Exception as err:
         raise err
+
+
+def get_dialog_options():
+    data = pickle.load(open(DIALOG_OPTIONS_PATH, 'rb'))
+    domain_tokens = data['domain_tokens']
+    maxlen = data['sample_length']
+    num_features = data['num_features']
+
+    return domain_tokens, maxlen, num_features

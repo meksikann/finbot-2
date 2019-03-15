@@ -1,5 +1,6 @@
 from tensorflow.python.keras.preprocessing.sequence import pad_sequences
 from tensorflow.python.keras.preprocessing.text import Tokenizer
+import numpy as np
 
 from app.main.utils import logger
 from app.main.ai import helper
@@ -33,7 +34,7 @@ def predict_intent(utterance):
     embed_matrix = helper.get_embedding_matrix(glove_dict, tk.word_index.items(), vocab_size, glove_dimension)
     model = helper.get_glove_model(vocab_size, glove_dimension, embed_matrix, max_length, len(classes))
 
-    model = helper.load_model_weights(model)
+    model = helper.load_nlp_model_weights(model)
 
     print('x_test', x_test)
 
@@ -44,3 +45,26 @@ def predict_intent(utterance):
     print('Predicted intent is:', predicted_class)
 
     return predicted_class
+
+
+def predict_action(sequence):
+    logger.info('================>>>>>>>>>>>>>>>> START DIALOG FLOW PREDICTION <<<<<<<<<<<<<<<<<=============')
+    try:
+        domain_tokens, maxlen, num_features = helper.get_dialog_options()
+        # prepare test data
+        x_test = np.array(sequence)
+        x_test = pad_sequences([x_test],  maxlen=maxlen, padding='post')
+        x_test = np.reshape(x_test, (1, x_test.shape[1], num_features))
+
+        # get model
+        model = helper.create_dialog_network(maxlen, num_features)
+
+        # load weights
+        model = helper.load_dm_model_weights(model)
+
+        pred = model.predict(x_test, verbose=1)
+        # TODO: choose closes predicted value from available actions list
+        return pred
+    except Exception as err:
+        logger.error(err)
+        raise err

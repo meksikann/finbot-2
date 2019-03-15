@@ -14,13 +14,19 @@ def handle_qa_request(data):
         result = ""
 
         # get user intent
-        prediction = predictor.predict_intent(utterance)
-        if prediction is not None:
-            print(prediction)
+        # prediction = predictor.predict_intent(utterance)
+        # if prediction is not None:
+        #     print(prediction)
+
+        # TODO: generate x_test for DM prediction
 
         # TODO: get next bot action
+        action_predicted = predictor.predict_action([8, 17, 9])  # wait for 16
+        print('PREDICTED ACTION: ', action_predicted)
 
         # TODO: if action utterance - send bot response
+
+        # save chat state
 
         return result
 

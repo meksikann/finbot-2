@@ -1,6 +1,6 @@
 from os.path import join, dirname
 import numpy as np
-import tensorflow as tf
+
 from tensorflow.python.keras.preprocessing.sequence import pad_sequences
 from tensorflow.python.keras.preprocessing.text import Tokenizer
 
@@ -152,13 +152,6 @@ def train_dialog_model():
         helper.save_dialog_options(domain_tokens, num_features, sample_length=max_length-1)
 
         print('================>>>>>>>>>>>>>>>>DIALOG TRAINING DONE<<<<<<<<<<<<<<<<<=============')
-        # print('================>>>>>>>>>>>>>>>> START TEST CASE <<<<<<<<<<<<<<<<<=============')
-        # x_test = np.array([9])
-        # x_test = pad_sequences([x_test],  maxlen=max_length-1, padding='post')
-        # x_test = np.reshape(x_test, (1, x_test.shape[1], num_features))
-        #
-        # pred = model.predict(x_test, verbose=1)
-        # print('TEST CASE RESULT:', pred)
 
     except Exception as err:
         raise err
