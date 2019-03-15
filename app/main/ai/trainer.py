@@ -68,28 +68,34 @@ def train_intent_model():
         raise err
 
 
-def split_sequence(sequence, n_steps):
-    X, y = list(), list()
-    for i in range(len(sequence)):
-        # find the end of this pattern
-        end_ix = i + n_steps
-        # check if we are beyond the sequence
-        if end_ix > len(sequence) - 1:
+def split_to_sequences(sequence):
+    x, y = [], []
+    max_length = len(sequence) - 1
+
+    for idx, seq in enumerate(sequence):
+        x_sample, y_sample = [], []
+        # stop when last sample treated
+        if idx == max_length:
             break
-        # gather input and output parts of the pattern
-        seq_x, seq_y = sequence[i:end_ix], sequence[end_ix]
-        X.append(seq_x)
-        y.append(seq_y)
-    return np.array(X), np.array(y)
+
+        x_sample = sequence[: idx+1]
+
+        x.append(x_sample)
+        y.append(sequence[idx+1])
+
+    return x, y
 
 
 def train_dialog_model():
     logger.info('Start train dialog model ----------->>>>>>>>')
     domain_tokens = dict()
     training_data = []
+    x_train = []
+    y_train = []
     max_length = 1
     num_features = 1
-    time_steps = 2
+    time_steps = 1
+    num_epochs = 300
 
     try:
         #
@@ -104,6 +110,7 @@ def train_dialog_model():
             domain_tokens[action] = (idx + 1)
         dialog_data = helper.get_dialog_flow_data()
 
+        # tokenize dialogs
         for flow in dialog_data['dialogs']:
             sequence = flow['flow']
             sequence = list(map(lambda sq: domain_tokens[sq], sequence))
@@ -114,47 +121,42 @@ def train_dialog_model():
 
             training_data.append(sequence)
 
+        # get dialogs flow versions
+        for sample in training_data:
+            splited_seq, labels = split_to_sequences(sample)
+            x_train = x_train + splited_seq
+            y_train = y_train + labels
+
         # pad sequences
-        padded_flows = pad_sequences(training_data, maxlen=max_length, padding='post')
-        # padded_flows = np.divide(padded_flows, divider)
+        x_train = pad_sequences(x_train, maxlen=max_length-1, padding='post')
 
-        # prepare training set
-        # x_set, y_set = padded_flows[:, :-1], padded_flows[:, 1:]
+        print(x_train)
+        print(y_train)
 
+        # reshape X to proper dimension [samples, timestamps ,features]
+        x_train = np.reshape(x_train, (x_train.shape[0], x_train.shape[1], num_features))
 
         # get LSTM model --------------------------------------------------------------------------->>>>>>>>>>>>
-        # #
-        model = helper.create_dialog_netowrk(time_steps, num_features)
+        model = helper.create_dialog_netowrk(max_length-1, num_features)
         model.compile(loss='mse', optimizer='adam')
 
         model.summary()
 
         # fit model
-        for idx, sample in enumerate(padded_flows):
-            if idx == 1:
-                print(sample)
-                x_train, y_train = split_sequence(sample, time_steps)
-                print(x_train)
-                print(y_train)
-
-                x_0 = np.reshape(x_train, (x_train.shape[0], x_train.shape[1], 1))
-                print('reshaped------------->>>>>>>>>')
-                print(x_0)
-
-                print('-----------------------------------------')
-                model.fit(x_0, y_train, epochs=100, batch_size=1, verbose=0)
+        model.fit(x_train, y_train, epochs=num_epochs, batch_size=num_features, verbose=1)
 
         # save model
 
         # save dialog tokens
+
         print('================>>>>>>>>>>>>>>>>DIALOG TRAINING DONE<<<<<<<<<<<<<<<<<=============')
-        x_test = np.array([10, 21])
-        x_test = np.reshape(x_test, (1, time_steps, num_features))
-
-        pred = model.predict(x_test, verbose=0)
-        print(pred)
-
-
+        # print('================>>>>>>>>>>>>>>>> START TEST CASE <<<<<<<<<<<<<<<<<=============')
+        # x_test = np.array([9])
+        # x_test = pad_sequences([x_test],  maxlen=max_length-1, padding='post')
+        # x_test = np.reshape(x_test, (1, x_test.shape[1], num_features))
+        #
+        # pred = model.predict(x_test, verbose=1)
+        # print('TEST CASE RESULT:', pred)
 
     except Exception as err:
         raise err
