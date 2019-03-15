@@ -13,6 +13,7 @@ from app.main import constants
 NLU_MODEL_PATH = join(dirname(__file__), 'models', 'nlu', constants.CPD_WL_1_PATH)
 DIALOG_MODEL_PATH = join(dirname(__file__), 'models', 'dialog', constants.CPD_DM_1_PATH)
 TOKENIZER_DATA_PATH = join(dirname(__file__), 'data', constants.TOKENIZER_PATH)
+DIALOG_OPTIONS_PATH = join(dirname(__file__), 'data', constants.DIALOG_OPTIONS_PATH)
 DIALOG_PATH = join(dirname(__file__), 'data', constants.DIALOG_PATH)
 DOMAIN_PATH = join(dirname(__file__), constants.DOMAIN_PATH)
 
@@ -20,6 +21,13 @@ DOMAIN_PATH = join(dirname(__file__), constants.DOMAIN_PATH)
 def save_model(model):
     try:
         model.save(NLU_MODEL_PATH)
+    except Exception as err:
+        raise err
+
+
+def save_dialog_model(model):
+    try:
+        model.save(DIALOG_MODEL_PATH)
     except Exception as err:
         raise err
 
@@ -154,9 +162,20 @@ def get_dialog_flow_data():
     return dialog
 
 
-def create_dialog_netowrk(time_steps, num_features):
+def create_dialog_network(time_steps, num_features):
     model = Sequential()
-    model.add(layers.LSTM(10, activation='relu', input_shape=(time_steps, num_features)))
+    model.add(layers.LSTM(20, activation='relu', input_shape=(time_steps, num_features)))
     model.add(layers.Dense(1))
 
     return model
+
+
+def save_dialog_options(domain_tokens, num_features, sample_length):
+    try:
+        pickle.dump({'domain_tokens': domain_tokens,
+                     'sample_length': sample_length,
+                     'num_features': num_features},
+                    open(DIALOG_OPTIONS_PATH, 'wb'))
+        logger.info('Pickle saved dialog options')
+    except Exception as err:
+        raise err

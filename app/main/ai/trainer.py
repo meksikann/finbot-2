@@ -137,7 +137,7 @@ def train_dialog_model():
         x_train = np.reshape(x_train, (x_train.shape[0], x_train.shape[1], num_features))
 
         # get LSTM model --------------------------------------------------------------------------->>>>>>>>>>>>
-        model = helper.create_dialog_netowrk(max_length-1, num_features)
+        model = helper.create_dialog_network(max_length - 1, num_features)
         model.compile(loss='mse', optimizer='adam')
 
         model.summary()
@@ -146,8 +146,10 @@ def train_dialog_model():
         model.fit(x_train, y_train, epochs=num_epochs, batch_size=num_features, verbose=1)
 
         # save model
+        helper.save_dialog_model(model)
 
         # save dialog tokens
+        helper.save_dialog_options(domain_tokens, num_features, sample_length=max_length-1)
 
         print('================>>>>>>>>>>>>>>>>DIALOG TRAINING DONE<<<<<<<<<<<<<<<<<=============')
         # print('================>>>>>>>>>>>>>>>> START TEST CASE <<<<<<<<<<<<<<<<<=============')
