@@ -17,6 +17,14 @@ dialogs:
   - intent_inform
   - utter_cannot_buy
 
+- flow: # get planned expenses + new buy + cannot buy
+  - intent_get_spend_planned
+  - utter_spend_planned
+  - intent_thanks
+  - utter_my_pleasure
+  - intent_goodbye
+  - utter_goodbye
+
 - flow: # get planned expenses + have'spent
   - intent_get_spend_planned
   - utter_spend_planned

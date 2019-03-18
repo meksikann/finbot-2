@@ -6,3 +6,5 @@ env-8/*
 /app/main/ai/data/glove/glove.6B.100d.txt
 *.xml
 /.idea/inspectionProfiles/Project_Default.xml
+*.pkl
+*.h5
