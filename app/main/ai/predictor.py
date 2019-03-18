@@ -47,10 +47,9 @@ def predict_intent(utterance):
     return predicted_class
 
 
-def predict_action(sequence):
+def predict_action(domain_tokens, maxlen, num_features, sequence):
     logger.info('================>>>>>>>>>>>>>>>> START DIALOG FLOW PREDICTION <<<<<<<<<<<<<<<<<=============')
     try:
-        domain_tokens, maxlen, num_features = helper.get_dialog_options()
         # prepare test data
         x_test = np.array(sequence)
         x_test = pad_sequences([x_test],  maxlen=maxlen, padding='post')
@@ -63,7 +62,13 @@ def predict_action(sequence):
         model = helper.load_dm_model_weights(model)
 
         pred = model.predict(x_test, verbose=1)
-        # TODO: choose closes predicted value from available actions list
+        # get array with domain_tokens values
+        tokens = []
+        for key, val in domain_tokens.items():
+            tokens.append(val)
+
+        # get closer value form list
+        pred = helper.get_closes_value(tokens, pred[0][0])
         return pred
     except Exception as err:
         logger.error(err)

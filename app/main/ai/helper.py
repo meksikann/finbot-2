@@ -14,6 +14,7 @@ NLU_MODEL_PATH = join(dirname(__file__), 'models', 'nlu', constants.CPD_WL_1_PAT
 DIALOG_MODEL_PATH = join(dirname(__file__), 'models', 'dialog', constants.CPD_DM_1_PATH)
 TOKENIZER_DATA_PATH = join(dirname(__file__), 'data', constants.TOKENIZER_PATH)
 DIALOG_OPTIONS_PATH = join(dirname(__file__), 'data', constants.DIALOG_OPTIONS_PATH)
+DIALOG_STATE_PATH = join(dirname(__file__), 'data', constants.DIALOG_STATE_PATH)
 DIALOG_PATH = join(dirname(__file__), 'data', constants.DIALOG_PATH)
 DOMAIN_PATH = join(dirname(__file__), constants.DOMAIN_PATH)
 
@@ -179,6 +180,8 @@ def create_dialog_network(time_steps, num_features):
 
 
 def save_dialog_options(domain_tokens, num_features, sample_length):
+    """set serialized  object - dialog data from file"""
+
     try:
         pickle.dump({'domain_tokens': domain_tokens,
                      'sample_length': sample_length,
@@ -190,9 +193,40 @@ def save_dialog_options(domain_tokens, num_features, sample_length):
 
 
 def get_dialog_options():
-    data = pickle.load(open(DIALOG_OPTIONS_PATH, 'rb'))
-    domain_tokens = data['domain_tokens']
-    maxlen = data['sample_length']
-    num_features = data['num_features']
+    try:
 
-    return domain_tokens, maxlen, num_features
+        """get serialized  object - dialog data from file"""
+        data = pickle.load(open(DIALOG_OPTIONS_PATH, 'rb'))
+        domain_tokens = data['domain_tokens']
+        maxlen = data['sample_length']
+        num_features = data['num_features']
+
+        return domain_tokens, maxlen, num_features
+    except Exception as err:
+        raise err
+
+
+def get_closes_value(values, value):
+    """ get closest value from given list"""
+    min_val = min(values, key=lambda x: abs(x - value))
+    return min_val
+
+
+def get_dialog_state():
+    try:
+        """get serialized  object - dialog state from file"""
+        data = pickle.load(open(DIALOG_STATE_PATH, 'rb'))
+
+        return data
+    except Exception as err:
+        raise err
+
+
+def save_dialog_state(data):
+    """set serialized  object - dialog state from file"""
+
+    try:
+        pickle.dump(data, open(DIALOG_STATE_PATH, 'wb'))
+        logger.info('Pickle saved dialog state')
+    except Exception as err:
+        raise err

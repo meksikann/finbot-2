@@ -9,6 +9,7 @@ def handle_qa_request(data):
     logger.info(data)
 
     utterance = data['utterance']
+    userID = '1234' # connector ID/userId should be used here to store user dialog state
 
     try:
         result = ""
@@ -18,14 +19,17 @@ def handle_qa_request(data):
         # if prediction is not None:
         #     print(prediction)
 
-        # TODO: generate x_test for DM prediction
+        domain_tokens, maxlen, num_features = helper.get_dialog_options()
+        state = helper.get_dialog_state()
+        # TODO: generate x_test for DM prediction/ restore dialog state
+        x_test = [8, 17, 9]
 
-        # TODO: get next bot action
-        action_predicted = predictor.predict_action([8, 17, 9])  # wait for 16
-        print('PREDICTED ACTION: ', action_predicted)
+        # predict next action
+        action_predicted = predictor.predict_action(domain_tokens, maxlen, num_features, x_test)
+        logger.info('PREDICTED ACTION: {}'.format(action_predicted))
 
-        # TODO: if action utterance - send bot response
-
+        # TODO: if action utterance - send bot response if Action do Action  and save dialog STATE , elif NONE  -
+        #  respond with utter_repeat_again  and DO NOT save Dialog state
         # save chat state
 
         return result
