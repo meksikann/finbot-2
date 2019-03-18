@@ -35,14 +35,10 @@ def predict_intent(utterance):
     model = helper.get_glove_model(vocab_size, glove_dimension, embed_matrix, max_length, len(classes))
 
     model = helper.load_nlp_model_weights(model)
-
-    print('x_test', x_test)
-
     # predict --------------------------------------------------------
     prediction = model.predict(x_test, verbose=verbose)
 
     predicted_class = helper.get_predicted_class(min_confidence, prediction, classes)
-    print('Predicted intent is:', predicted_class)
 
     return predicted_class
 
@@ -60,6 +56,9 @@ def predict_action(domain_tokens, maxlen, num_features, sequence):
 
         # load weights
         model = helper.load_dm_model_weights(model)
+
+        # reset model states
+        model.reset_states()
 
         pred = model.predict(x_test, verbose=1)
         # get array with domain_tokens values

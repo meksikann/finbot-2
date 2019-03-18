@@ -13,6 +13,7 @@ from app.main import constants
 NLU_MODEL_PATH = join(dirname(__file__), 'models', 'nlu', constants.CPD_WL_1_PATH)
 DIALOG_MODEL_PATH = join(dirname(__file__), 'models', 'dialog', constants.CPD_DM_1_PATH)
 TOKENIZER_DATA_PATH = join(dirname(__file__), 'data', constants.TOKENIZER_PATH)
+UTTERANCE_PATH = join(dirname(__file__), 'data', constants.UTTERANCE_PATH)
 DIALOG_OPTIONS_PATH = join(dirname(__file__), 'data', constants.DIALOG_OPTIONS_PATH)
 DIALOG_STATE_PATH = join(dirname(__file__), 'data', constants.DIALOG_STATE_PATH)
 DIALOG_PATH = join(dirname(__file__), 'data', constants.DIALOG_PATH)
@@ -219,7 +220,8 @@ def get_dialog_state():
 
         return data
     except Exception as err:
-        raise err
+        logger.info('Dialog state file not found')
+        return None
 
 
 def save_dialog_state(data):
@@ -230,3 +232,24 @@ def save_dialog_state(data):
         logger.info('Pickle saved dialog state')
     except Exception as err:
         raise err
+
+
+def get_utterance(domain_tokens, action_predicted):
+    utter_data = json.loads(open(UTTERANCE_PATH).read())
+    utterances = utter_data['utterances']
+    token = None
+
+    for key, value in domain_tokens.items():
+        if value == action_predicted:
+            token = key
+            break
+
+    return utterances[token]
+
+
+def generate_utter(template):
+    utter_data = json.loads(open(UTTERANCE_PATH).read())
+    utterances = utter_data['utterances']
+
+    return utterances[template]
+

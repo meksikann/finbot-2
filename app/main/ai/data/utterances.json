@@ -8,6 +8,7 @@
     "utter_spend_planned": "Well, we have planned to spend 1500 $ inscluding appartment rental and so on...",
     "utter_affirm": "Yeah, for sure!",
     "utter_help_info": "Well, I am you personal wallet assistant, called to help you with private finance management",
-    "utter_how_can_help": "How can I help you my friend?"
+    "utter_how_can_help": "How can I help you my friend?",
+    "utter_repeat_again": "Sorry, could you repeat again please?"
   }
 }
