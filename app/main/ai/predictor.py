@@ -19,7 +19,7 @@ def predict_intent(utterance):
     verbose = constants.VERBOSE
 
     # prepare test data ----------------------------------------------
-    word_index, classes = helper.get_token_data()
+    word_index, classes, embed_matrix = helper.get_token_data()
 
     tk = Tokenizer()
 
@@ -29,9 +29,9 @@ def predict_intent(utterance):
     x_test = pad_sequences(x_test, maxlen=max_length, padding='post')
 
     # get trained model ----------------------------------------------
-    glove_dict = helper.generate_glove_dict(glove_path)
+    # glove_dict = helper.generate_glove_dict(glove_path)
     vocab_size = len(tk.word_index) + 1
-    embed_matrix = helper.get_embedding_matrix(glove_dict, tk.word_index.items(), vocab_size, glove_dimension)
+    # embed_matrix = helper.get_embedding_matrix(glove_dict, tk.word_index.items(), vocab_size, glove_dimension)
     model = helper.get_glove_model(vocab_size, glove_dimension, embed_matrix, max_length, len(classes))
 
     model = helper.load_nlp_model_weights(model)
@@ -58,7 +58,7 @@ def predict_action(domain_tokens, maxlen, num_features, sequence):
         model = helper.load_dm_model_weights(model)
 
         # reset model states
-        model.reset_states()
+        # model.reset_states()
 
         pred = model.predict(x_test, verbose=1)
         # get array with domain_tokens values
@@ -72,3 +72,7 @@ def predict_action(domain_tokens, maxlen, num_features, sequence):
     except Exception as err:
         logger.error(err)
         raise err
+
+
+def restart_predictor():
+    helper.clear_prediction_data()

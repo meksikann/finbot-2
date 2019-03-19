@@ -12,3 +12,5 @@ Use python 3.5 virtual env
 - Train dialog model ``python manage.py train_dialog`` 
 - Run server ``python manage.py run``
 
+- For local testing use ngrok ``./ngrok http 8282 -host-header="localhost:8282"  ``
+

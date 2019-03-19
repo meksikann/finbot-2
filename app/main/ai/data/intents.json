@@ -176,7 +176,8 @@
         "give me my wallet planned amount?",
         "tell me how much money do i have planned?",
         "what are my plans for the month?",
-        "what we scheduled for the current month"
+        "what we scheduled for the current month",
+        "what is planned?"
       ],
       "responses": []
     },

@@ -6,6 +6,7 @@ from flask_script import Manager
 from app.main import create_app
 from app.main.utils import logger, redis
 from app.main.ai import trainer
+from app.main.ai import predictor
 
 app = create_app(os.getenv('CUSTOM_ENV') or 'dev')
 
@@ -41,6 +42,12 @@ def train_nlu():
 def train_dialog():
     logger.info('Command: train_dialog')
     trainer.train_dialog_model()
+
+
+@manager.command
+def restart_predictor():
+    logger.info('Command: restart predictor')
+    predictor.restart_predictor()
 
 
 if __name__ == '__main__':

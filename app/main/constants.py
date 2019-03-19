@@ -9,4 +9,5 @@ DIALOG_OPTIONS_PATH = 'dialog_data.pkl'
 DIALOG_STATE_PATH = 'dialog_state.pkl'
 DOMAIN_PATH = 'domain.yaml'
 DIALOG_PATH = 'dialogs.yaml'
+CREDS_PATH = 'credentials.yaml'
 THRASHOLD = 0.5

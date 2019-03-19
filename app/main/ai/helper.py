@@ -1,3 +1,4 @@
+import os
 from os.path import join, dirname
 import numpy as np
 import json
@@ -6,6 +7,7 @@ import tensorflow as tf
 from tensorflow import keras
 from tensorflow.python.keras import Sequential, layers
 import yaml
+import requests
 
 from app.main.utils import logger
 from app.main import constants
@@ -17,6 +19,7 @@ UTTERANCE_PATH = join(dirname(__file__), 'data', constants.UTTERANCE_PATH)
 DIALOG_OPTIONS_PATH = join(dirname(__file__), 'data', constants.DIALOG_OPTIONS_PATH)
 DIALOG_STATE_PATH = join(dirname(__file__), 'data', constants.DIALOG_STATE_PATH)
 DIALOG_PATH = join(dirname(__file__), 'data', constants.DIALOG_PATH)
+CREDS_PATH = join(dirname(__file__), 'creds', constants.CREDS_PATH)
 DOMAIN_PATH = join(dirname(__file__), constants.DOMAIN_PATH)
 
 
@@ -120,9 +123,10 @@ def get_glove_model(vocab_size, glove_dimension, embed_matrix, max_length, num_c
     return model
 
 
-def save_tokenizer_data(word_index, classes):
+def save_tokenizer_data(word_index, classes, embed_matrix):
     try:
-        pickle.dump({'word_index': word_index, 'classes': classes}, open(TOKENIZER_DATA_PATH, 'wb'))
+        pickle.dump({'word_index': word_index, 'classes': classes, 'embed_matrix': embed_matrix},
+                    open(TOKENIZER_DATA_PATH, 'wb'))
         logger.info('Pickle saved tokenizer data')
     except Exception as err:
         raise err
@@ -132,8 +136,9 @@ def get_token_data():
     data = pickle.load(open(TOKENIZER_DATA_PATH, 'rb'))
     word_index = data['word_index']
     classes = data['classes']
+    embed_matrix = data['embed_matrix']
 
-    return word_index, classes
+    return word_index, classes, embed_matrix
 
 
 def get_predicted_class(threshold, scores, classes):
@@ -165,6 +170,13 @@ def get_domain_data():
     return parsed
 
 
+def get_creds_data():
+    document = open(CREDS_PATH, 'r')
+    parsed = yaml.load(document)
+
+    return parsed
+
+
 def get_dialog_flow_data():
     document = open(DIALOG_PATH, 'r')
     dialog = yaml.load(document)
@@ -174,7 +186,7 @@ def get_dialog_flow_data():
 
 def create_dialog_network(time_steps, num_features):
     model = Sequential()
-    model.add(layers.LSTM(20, activation='relu', input_shape=(time_steps, num_features)))
+    model.add(layers.LSTM(5, activation='relu', input_shape=(time_steps, num_features)))
     model.add(layers.Dense(1))
 
     return model
@@ -208,6 +220,7 @@ def get_dialog_options():
 
 
 def get_closes_value(values, value):
+    logger.info('Original action prediction:{}'.format(value))
     """ get closest value from given list"""
     min_val = min(values, key=lambda x: abs(x - value))
     return min_val
@@ -235,16 +248,19 @@ def save_dialog_state(data):
 
 
 def get_utterance(domain_tokens, action_predicted):
-    utter_data = json.loads(open(UTTERANCE_PATH).read())
-    utterances = utter_data['utterances']
-    token = None
+    try:
+        utter_data = json.loads(open(UTTERANCE_PATH).read())
+        utterances = utter_data['utterances']
+        token = None
 
-    for key, value in domain_tokens.items():
-        if value == action_predicted:
-            token = key
-            break
+        for key, value in domain_tokens.items():
+            if value == action_predicted:
+                token = key
+                break
 
-    return utterances[token]
+        return utterances[token]
+    except KeyError:
+        return 'Error - no utterance found!'
 
 
 def generate_utter(template):
@@ -253,3 +269,27 @@ def generate_utter(template):
 
     return utterances[template]
 
+
+def check_key_exists(obj, key):
+    if key in obj:
+        return True
+
+    return False
+
+
+def post_slack_message(text, channel_id):
+    url = 'https://slack.com/api/chat.postMessage'
+    cred = get_creds_data()
+
+    msg = {
+        'token': cred['slack']['slack_token'],
+        'channel': channel_id,
+        'text': text
+    }
+
+    r = requests.post(url, data=msg)
+    print('Slack postMessage code: ', r.status_code)
+
+
+def clear_prediction_data():
+    os.remove(DIALOG_STATE_PATH)

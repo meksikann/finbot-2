@@ -14,7 +14,7 @@ def train_intent_model():
     logger.info('Start intent model training --------->>>>>>>>>')
     max_length = 10
     glove_dimension = 100
-    epochs = 300
+    epochs = 400
 
     try:
         glove_path = constants.GLOVE_PATH
@@ -60,7 +60,7 @@ def train_intent_model():
         helper.save_model(model)
 
         # save tokenizer data
-        helper.save_tokenizer_data(tk.word_index, classes)
+        helper.save_tokenizer_data(tk.word_index, classes, embed_matrix)
 
         print('================>>>>>>>>>>>>>>>>NLU TRAINING DONE<<<<<<<<<<<<<<<<<=============')
 
@@ -95,7 +95,7 @@ def train_dialog_model():
     max_length = 1
     num_features = 1
     time_steps = 1
-    num_epochs = 300
+    num_epochs = 200
 
     try:
         #

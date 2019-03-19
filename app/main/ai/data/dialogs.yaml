@@ -12,12 +12,14 @@ dialogs:
 - flow: # get planned expenses + new buy + cannot buy
   - intent_get_spend_planned
   - utter_spend_planned
+  - intent_affirm
+  - utter_affirm
   - intent_new_buy
   - utter_ask_price
   - intent_inform
   - utter_cannot_buy
 
-- flow: # get planned expenses + new buy + cannot buy
+- flow: # get planned expenses
   - intent_get_spend_planned
   - utter_spend_planned
   - intent_thanks

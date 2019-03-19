@@ -1,22 +1,48 @@
 from app.main.utils import logger
 from app.main.ai import predictor
 from app.main.ai import helper
+from flask import jsonify
 
 
 def handle_qa_request(data):
     """handle request from Google assistant: call prediction services to generate next bot response"""
     logger.info('Got request from GA.')
-    logger.info(data)
+    # logger.info(data)
 
-    utterance = data['utterance']
-    userID = '1234' # connector ID/userId should be used here to store user dialog state TODO: mreceive userId from connector
+    utterance = ''
+    is_slack_channel = False
+    channel_id = None
+    user_id = '1234'  # connector ID/userId should be used here to store user dialog state TODO: mreceive userId from connector
+
+    # *******************************  slack connection ***********************************************************
+    # slack event url testing
+    if helper.check_key_exists(data, 'type') and data['type'] == 'url_verification':
+        return data['challenge']
+
+    # receive user event from slack ------------>>>>>>>>>>
+    if helper.check_key_exists(data, 'event'):
+
+        # do not handle request if bot message event occurred
+        if helper.check_key_exists(data['event'], 'subtype'):
+            return ''
+        # get data from user message
+        if data['event']['type'] == 'message':
+            utterance = data['event']['text']
+            user_id = data['event']['user']
+            channel_id = data['event']['channel']
+            is_slack_channel = True
+    # receive event from postman ------------>>>>>>>>>>
+    else:
+        utterance = data['utterance']
+
+    # *************************************************************************************************************
 
     try:
-        result = ""
+        text_response = ""
         domain_tokens, maxlen, num_features = helper.get_dialog_options()
 
         print(domain_tokens)
-        #get user intent
+        # get user intent
         logger.info('User said: ' + utterance)
         prediction = predictor.predict_intent(utterance)
         logger.info('Predicted intent token:{}'.format(prediction))
@@ -24,8 +50,12 @@ def handle_qa_request(data):
         if prediction is not None:
             utterance_token = domain_tokens[prediction]
         else:
-            result = helper.generate_utter('utter_repeat_again')
-            return result
+            text_response = helper.generate_utter('utter_repeat_again')
+
+            # post slack message
+            if is_slack_channel:
+                helper.post_slack_message(text_response, channel_id)
+            return text_response
 
         # get dialog state
         state = helper.get_dialog_state()
@@ -33,10 +63,10 @@ def handle_qa_request(data):
         if state is not None:
             pass
         else:
-            state = dict({userID: []})
+            state = dict({user_id: []})
 
         # generate x_test for DM prediction/ restore dialog state
-        x_test = state[userID]
+        x_test = state[user_id]
         # update user dialog state with new utterance
         x_test.append(utterance_token)
 
@@ -53,14 +83,18 @@ def handle_qa_request(data):
             x_test.append(action_predicted)
 
         logger.info('PREDICTED ACTION: {}'.format(action_predicted))
-        result = helper.get_utterance(domain_tokens, action_predicted)
+        text_response = helper.get_utterance(domain_tokens, action_predicted)
 
         print('actions after predict:', x_test)
         # save chat state
-        state[userID] = x_test
+        state[user_id] = x_test
         helper.save_dialog_state(state)
 
-        return result
+        # post slack message
+        if is_slack_channel:
+            helper.post_slack_message(text_response, channel_id)
+
+        return text_response
 
     except Exception as err:
         raise err
