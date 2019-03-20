@@ -34,19 +34,24 @@ def test():
 
 @manager.command
 def train_nlu():
+    """ start train NN responsible for intent classification"""
+
     logger.info('Command: train_nlu')
     trainer.train_intent_model()
 
 
 @manager.command
 def train_dialog():
+    """ start train NN responsible for dialog actions prediction"""
     logger.info('Command: train_dialog')
     trainer.train_dialog_model()
 
 
 @manager.command
 def restart_predictor():
-    logger.info('Command: restart predictor')
+    """ used to remove all user dialog states (to start from total beginning)"""
+
+    logger.info('Command: restart predictor: remove dialog_state.pkl')
     predictor.restart_predictor()
 
 

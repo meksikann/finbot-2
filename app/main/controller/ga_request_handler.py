@@ -1,44 +1,64 @@
 from app.main.utils import logger
 from app.main.ai import predictor
 from app.main.ai import helper
-from flask import jsonify
+from app.main import constants
 
 
 def handle_qa_request(data):
     """handle request from Google assistant: call prediction services to generate next bot response"""
+
     logger.info('Got request from GA.')
     # logger.info(data)
 
+    utterance, user_id, channel_id, channel_name = get_data_form_channel(data)
+
+    next_user_action = process_next_user_action(utterance, user_id)
+
+    # post slack message
+    if channel_name == constants.SLACK:
+        helper.post_slack_message(next_user_action['text'], channel_id)
+
+    return next_user_action['text']
+
+
+def get_data_form_channel(req):
+    """define the channel and extract data for predictor"""
+
     utterance = ''
-    is_slack_channel = False
+    channel_name = None
     channel_id = None
-    user_id = '1234'  # connector ID/userId should be used here to store user dialog state TODO: mreceive userId from connector
+    user_id = None
 
     # *******************************  slack connection ***********************************************************
     # slack event url testing
-    if helper.check_key_exists(data, 'type') and data['type'] == 'url_verification':
-        return data['challenge']
+    if helper.check_key_exists(req, 'type') and req['type'] == 'url_verification':
+        return req['challenge']
 
     # receive user event from slack ------------>>>>>>>>>>
-    if helper.check_key_exists(data, 'event'):
+    if helper.check_key_exists(req, 'event'):
 
         # do not handle request if bot message event occurred
-        if helper.check_key_exists(data['event'], 'subtype'):
+        if helper.check_key_exists(req['event'], 'subtype'):
             return ''
         # get data from user message
-        if data['event']['type'] == 'message':
-            utterance = data['event']['text']
-            user_id = data['event']['user']
-            channel_id = data['event']['channel']
-            is_slack_channel = True
+        if req['event']['type'] == 'message':
+            utterance = req['event']['text']
+            user_id = req['event']['user']
+            channel_id = req['event']['channel']
+            channel_name = constants.SLACK
     # receive event from postman ------------>>>>>>>>>>
     else:
-        utterance = data['utterance']
+        utterance = req['utterance']
 
-    # *************************************************************************************************************
+    return utterance, user_id, channel_id, channel_name
+
+
+def process_next_user_action(utterance, user_id='1234'):
+    """user AI predictor to generate next bot response/action"""
+
+    bot_response = dict()
 
     try:
-        text_response = ""
         domain_tokens, maxlen, num_features = helper.get_dialog_options()
 
         print(domain_tokens)
@@ -47,54 +67,46 @@ def handle_qa_request(data):
         prediction = predictor.predict_intent(utterance)
         logger.info('Predicted intent token:{}'.format(prediction))
 
-        if prediction is not None:
-            utterance_token = domain_tokens[prediction]
-        else:
+        if prediction is None:
             text_response = helper.generate_utter('utter_repeat_again')
-
-            # post slack message
-            if is_slack_channel:
-                helper.post_slack_message(text_response, channel_id)
-            return text_response
-
-        # get dialog state
-        state = helper.get_dialog_state()
-
-        if state is not None:
-            pass
         else:
-            state = dict({user_id: []})
+            utterance_token = domain_tokens[prediction]
 
-        # generate x_test for DM prediction/ restore dialog state
-        x_test = state[user_id]
-        # update user dialog state with new utterance
-        x_test.append(utterance_token)
+            # get dialog state
+            state = helper.get_dialog_state()
 
-        # get lats n-actions with dialog length dimension
-        if len(x_test) > maxlen:
-            x_test = x_test[-maxlen:]
+            if state is not None:
+                pass
+            else:
+                state = dict({user_id: []})
 
-        # predict next action
-        print('actions before predict:', x_test)
-        action_predicted = predictor.predict_action(domain_tokens, maxlen, num_features, x_test)
+            # generate x_test for DM prediction/ restore dialog state
+            x_test = state[user_id]
+            # update user dialog state with new utterance
+            x_test.append(utterance_token)
 
-        if action_predicted is not None:
-            # save max length+1 actions
-            x_test.append(action_predicted)
+            # get lats n-actions with dialog length dimension
+            if len(x_test) > maxlen:
+                x_test = x_test[-maxlen:]
 
-        logger.info('PREDICTED ACTION: {}'.format(action_predicted))
-        text_response = helper.get_utterance(domain_tokens, action_predicted)
+            # predict next action
+            print('actions before predict:', x_test)
+            action_predicted = predictor.predict_action(domain_tokens, maxlen, num_features, x_test)
 
-        print('actions after predict:', x_test)
-        # save chat state
-        state[user_id] = x_test
-        helper.save_dialog_state(state)
+            if action_predicted is not None:
+                # save max length+1 actions
+                x_test.append(action_predicted)
 
-        # post slack message
-        if is_slack_channel:
-            helper.post_slack_message(text_response, channel_id)
+            logger.info('PREDICTED ACTION: {}'.format(action_predicted))
+            text_response = helper.get_utterance(domain_tokens, action_predicted)
 
-        return text_response
+            print('actions after predict:', x_test)
+            # save chat state
+            state[user_id] = x_test
+            helper.save_dialog_state(state)
 
+        bot_response['text'] = text_response
+
+        return bot_response
     except Exception as err:
         raise err

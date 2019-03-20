@@ -292,4 +292,7 @@ def post_slack_message(text, channel_id):
 
 
 def clear_prediction_data():
-    os.remove(DIALOG_STATE_PATH)
+    try:
+        os.remove(DIALOG_STATE_PATH)
+    except FileNotFoundError as err:
+        logger.info('{} was already removed.'.format(DIALOG_STATE_PATH))
