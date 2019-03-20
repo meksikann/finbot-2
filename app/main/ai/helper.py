@@ -186,7 +186,7 @@ def get_dialog_flow_data():
 
 def create_dialog_network(time_steps, num_features):
     model = Sequential()
-    model.add(layers.LSTM(5, activation='relu', input_shape=(time_steps, num_features)))
+    model.add(layers.LSTM(20, activation='relu', input_shape=(time_steps, num_features)))
     model.add(layers.Dense(1))
 
     return model
@@ -259,8 +259,9 @@ def get_utterance(domain_tokens, action_predicted):
                 break
 
         return utterances[token]
-    except KeyError:
-        return 'Error - no utterance found!'
+    except KeyError as err:
+        logger.error(err)
+        return 'Crap!!!! So weird thing happened on my side. Please wait a bit I need report it to our devs'
 
 
 def generate_utter(template):

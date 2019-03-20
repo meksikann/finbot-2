@@ -10,47 +10,59 @@ def handle_qa_request(data):
     logger.info('Got request from GA.')
     # logger.info(data)
 
-    utterance, user_id, channel_id, channel_name = get_data_form_channel(data)
+    proceed, utterance, user_id, channel_id, channel_name = get_data_form_channel(data)
+
+    # if no need to invoke predictor
+    if proceed is False:
+        return ''
 
     next_user_action = process_next_user_action(utterance, user_id)
 
     # post slack message
     if channel_name == constants.SLACK:
         helper.post_slack_message(next_user_action['text'], channel_id)
+        return ''
 
     return next_user_action['text']
 
 
 def get_data_form_channel(req):
     """define the channel and extract data for predictor"""
-
+    print(req)
     utterance = ''
     channel_name = None
     channel_id = None
     user_id = None
+    proceed = False
 
     # *******************************  slack connection ***********************************************************
     # slack event url testing
     if helper.check_key_exists(req, 'type') and req['type'] == 'url_verification':
-        return req['challenge']
-
-    # receive user event from slack ------------>>>>>>>>>>
-    if helper.check_key_exists(req, 'event'):
-
-        # do not handle request if bot message event occurred
-        if helper.check_key_exists(req['event'], 'subtype'):
-            return ''
-        # get data from user message
-        if req['event']['type'] == 'message':
-            utterance = req['event']['text']
-            user_id = req['event']['user']
-            channel_id = req['event']['channel']
-            channel_name = constants.SLACK
-    # receive event from postman ------------>>>>>>>>>>
+        utterance = req['challenge']
+        proceed = False
     else:
-        utterance = req['utterance']
+        # receive user event from slack ------------>>>>>>>>>>
+        if helper.check_key_exists(req, 'event'):
 
-    return utterance, user_id, channel_id, channel_name
+            # do not handle request if bot message event occurred
+            if helper.check_key_exists(req['event'], 'subtype') and req.get('event', {}).get('subtype',
+                                                                                             None) == 'bot_message':
+                utterance = ''
+                proceed = False
+            else:
+                # get data from user message
+                if req['event']['type'] == 'message':
+                    utterance = req['event']['text']
+                    user_id = req['event']['user']
+                    channel_id = req['event']['channel']
+                    channel_name = constants.SLACK
+                    proceed = True
+        # receive event from postman ------------>>>>>>>>>>
+        else:
+            proceed = True
+            utterance = req['utterance']
+
+    return proceed, utterance, user_id, channel_id, channel_name
 
 
 def process_next_user_action(utterance, user_id='1234'):
@@ -97,7 +109,8 @@ def process_next_user_action(utterance, user_id='1234'):
                 # save max length+1 actions
                 x_test.append(action_predicted)
 
-            logger.info('PREDICTED ACTION: {}'.format(action_predicted))
+            logger.info(
+                'PREDICTED ACTION: {} with index {}'.format(get_key(domain_tokens, action_predicted), action_predicted))
             text_response = helper.get_utterance(domain_tokens, action_predicted)
 
             print('actions after predict:', x_test)
@@ -110,3 +123,9 @@ def process_next_user_action(utterance, user_id='1234'):
         return bot_response
     except Exception as err:
         raise err
+
+
+def get_key(dct, val):
+    for key, value in dct.items():
+        if value == val:
+            return key
