@@ -69,7 +69,7 @@ def train_intent_model():
         raise err
 
 
-# TODO: make split methiod work with 'action_'
+# TODO: make split method work with 'action_'
 def generate_sequences_and_labels(sequence):
     x, y = [], []
     max_length = len(sequence) - 1
@@ -81,31 +81,28 @@ def generate_sequences_and_labels(sequence):
             break
 
         if action.startswith(constants.INTENT_TEMPLATE):
-            x_sample = sequence[: idx+1]
+            x_sample = sequence[: idx + 1]
 
             x.append(x_sample)
-            y.append(sequence[idx+1])
+            y.append(sequence[idx + 1])
 
     return x, y
 
 
 def tokenize_matrix(data, tokens):
     for idx, sample in enumerate(data):
-
-            data[idx] = list(map(lambda sq: tokens[sq], sample))
+        data[idx] = list(map(lambda sq: tokens[sq], sample))
     return data
 
 
 def train_dialog_model():
     logger.info('Start train dialog model ----------->>>>>>>>')
     domain_tokens = dict()
-    training_data = []
     x_train = []
     y_train = []
     max_length = 1
     num_features = 1
-    time_steps = 1
-    num_epochs = 100
+    num_epochs = 200
 
     try:
         #
@@ -135,13 +132,13 @@ def train_dialog_model():
 
         # Tokenize training set
         x_train = tokenize_matrix(x_train, tokens=domain_tokens)
-        y_train = tokenize_matrix([y_train], tokens=domain_tokens)[0]  # get first element from list because of smaller dimension
+        # get first element from list because of smaller dimension
+        y_train = tokenize_matrix([y_train], tokens=domain_tokens)[0]
 
         # pad sequences
-        x_train = pad_sequences(x_train, maxlen=max_length-1, padding='post')
+        x_train = pad_sequences(x_train, maxlen=max_length - 1, padding='post')
 
         # one hot encode Y
-        print('domain tokens length:', len(domain_tokens))
         y_train = tf.one_hot(y_train, len(domain_tokens))
 
         # get LSTM model --------------------------------------------------------------------------->>>>>>>>>>>>
@@ -150,14 +147,17 @@ def train_dialog_model():
 
         model.summary()
 
+        print('------------- x_train ---------------------------')
+        print(x_train)
+
         # fit model
-        model.fit(x_train, y_train, epochs=num_epochs,  verbose=1, steps_per_epoch=2)
+        model.fit(x_train, y_train, epochs=num_epochs, verbose=1, steps_per_epoch=2)
 
         # save model
         helper.save_dialog_model(model)
 
         # save dialog tokens
-        helper.save_dialog_options(domain_tokens, num_features, sample_length=max_length-1)
+        helper.save_dialog_options(domain_tokens, num_features, sample_length=max_length - 1)
 
         print('================>>>>>>>>>>>>>>>>DIALOG TRAINING DONE<<<<<<<<<<<<<<<<<=============')
 

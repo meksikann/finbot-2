@@ -22,6 +22,37 @@ DIALOG_PATH = join(dirname(__file__), 'data', constants.DIALOG_PATH)
 CREDS_PATH = join(dirname(__file__), 'creds', constants.CREDS_PATH)
 DOMAIN_PATH = join(dirname(__file__), constants.DOMAIN_PATH)
 
+"""************************************** NEURAL NETS *****************************************************"""
+
+
+def create_dialog_network(time_steps, classes_num):
+    vocab_size = 100
+    vec_size = 50
+    model = Sequential()
+    model.add(layers.Embedding(vocab_size, vec_size, input_length=time_steps))
+    model.add(layers.LSTM(vec_size, dropout=0.2, recurrent_dropout=0.2))
+    model.add(layers.Dense(classes_num, activation='softmax'))
+
+    return model
+
+
+def get_glove_model(vocab_size, glove_dimension, embed_matrix, max_length, num_classes):
+    keras.backend.clear_session()
+    model = Sequential()
+    embed = layers.Embedding(vocab_size, glove_dimension, weights=[embed_matrix], input_length=max_length,
+                             trainable=False)
+
+    model.add(embed)
+    model.add(layers.Flatten())
+    model.add(layers.Dense(30, activation=tf.nn.relu)),
+    model.add(layers.Dropout(0.5))
+    model.add(layers.Dense(num_classes, activation=tf.nn.softmax))
+
+    return model
+
+
+"""********************************************************************************************************"""
+
 
 def save_model(model):
     try:
@@ -86,7 +117,6 @@ def generate_glove_dict(path):
 def get_training_data_from_json(path):
     train_data = []
     classes = []
-    print('========================', path)
 
     training_data = json.loads(open(path).read())
 
@@ -106,21 +136,6 @@ def convert_y_data_to_labels(data, classes):
     for set in data:
         set[1] = classes.index(set[1])
     return data
-
-
-def get_glove_model(vocab_size, glove_dimension, embed_matrix, max_length, num_classes):
-    keras.backend.clear_session()
-    model = Sequential()
-    embed = layers.Embedding(vocab_size, glove_dimension, weights=[embed_matrix], input_length=max_length,
-                             trainable=False)
-
-    model.add(embed)
-    model.add(layers.Flatten())
-    model.add(layers.Dense(30, activation=tf.nn.relu)),
-    model.add(layers.Dropout(0.5))
-    model.add(layers.Dense(num_classes, activation=tf.nn.softmax))
-
-    return model
 
 
 def save_tokenizer_data(word_index, classes, embed_matrix):
@@ -182,17 +197,6 @@ def get_dialog_flow_data():
     dialog = yaml.load(document)
 
     return dialog
-
-
-def create_dialog_network(time_steps, classes_num):
-    vocab_size = 100
-    vec_size = 50
-    model = Sequential()
-    model.add(layers.Embedding(vocab_size, vec_size, input_length=time_steps))
-    model.add(layers.LSTM(vec_size, dropout=0.2, recurrent_dropout=0.2))
-    model.add(layers.Dense(classes_num,  activation='softmax'))
-
-    return model
 
 
 def save_dialog_options(domain_tokens, num_features, sample_length):

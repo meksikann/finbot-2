@@ -43,14 +43,15 @@ def predict_intent(utterance):
     return predicted_class
 
 
+# TODO: apply thrashold
 def predict_action(domain_tokens, maxlen, num_features, sequence):
     logger.info('================>>>>>>>>>>>>>>>> START DIALOG FLOW PREDICTION <<<<<<<<<<<<<<<<<=============')
     try:
+        class_predicted = None
         min_confidence = constants.THRASHOLD
         # prepare test data
         x_test = np.array(sequence)
         x_test = pad_sequences([x_test],  maxlen=maxlen, padding='post')
-        # x_test = np.reshape(x_test, (1, x_test.shape[1], num_features))
 
         # get model
         model = helper.create_dialog_network(maxlen, len(domain_tokens))
@@ -63,19 +64,17 @@ def predict_action(domain_tokens, maxlen, num_features, sequence):
         print('X_test: ', x_test)
 
         pred = model.predict(x_test, verbose=1)
-        # predicted_class = helper.get_predicted_class(min_confidence, pred, domain_tokens)
+
+        # get max score class
         max_score_index = np.argmax(pred)
 
-
-        # # get array with domain_tokens values
-        # tokens = []
+        # log data predicted
         for key, val in domain_tokens.items():
             if val == max_score_index:
                 class_predicted = key
                 break
-        print('predicted------->>>>>>>', class_predicted)
-        # # get closer value form list
-        # pred = helper.get_closes_value(tokens, pred[0][0])
+        logger.info('predicted------->>>>>>>, {}'.format(class_predicted))
+
         return max_score_index
     except Exception as err:
         logger.error(err)
