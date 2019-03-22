@@ -12,3 +12,6 @@ DIALOG_PATH = 'dialogs.yaml'
 CREDS_PATH = 'credentials.yaml'
 THRASHOLD = 0.5
 SLACK = 'slack'
+UTTER_TEMPLATE = 'utter_'
+INTENT_TEMPLATE = 'intent_'
+ACTION_TEMPLATE = 'action_'

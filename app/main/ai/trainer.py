@@ -68,22 +68,31 @@ def train_intent_model():
         raise err
 
 
-def split_to_sequences(sequence):
+# TODO: make split methiod work with 'action_'
+def generate_sequences_and_labels(sequence):
     x, y = [], []
     max_length = len(sequence) - 1
 
-    for idx, seq in enumerate(sequence):
+    for idx, action in enumerate(sequence):
         x_sample, y_sample = [], []
         # stop when last sample treated
         if idx == max_length:
             break
 
-        x_sample = sequence[: idx+1]
+        if action.startswith(constants.INTENT_TEMPLATE):
+            x_sample = sequence[: idx+1]
 
-        x.append(x_sample)
-        y.append(sequence[idx+1])
+            x.append(x_sample)
+            y.append(sequence[idx+1])
 
     return x, y
+
+
+def tokenize_matrix(data, tokens):
+    for idx, sample in enumerate(data):
+
+            data[idx] = list(map(lambda sq: tokens[sq], sample))
+    return data
 
 
 def train_dialog_model():
@@ -102,7 +111,7 @@ def train_dialog_model():
         # prepare training set with dialog sequences ----------------------------------------------->>>>>>>>>>>
         # #
 
-        # get domain data to make dialog tokenized
+        # get domain data
         domain_data = helper.get_domain_data()
 
         for idx, action in enumerate(domain_data['actions_list']):
@@ -110,28 +119,28 @@ def train_dialog_model():
             domain_tokens[action] = (idx + 1)
         dialog_data = helper.get_dialog_flow_data()
 
-        # tokenize dialogs
+        # get X, Y from sequence
         for flow in dialog_data['dialogs']:
             sequence = flow['flow']
-            sequence = list(map(lambda sq: domain_tokens[sq], sequence))
 
-            # get max list length
+            splitted_seq, labels = generate_sequences_and_labels(sequence)
+
+            # get max dialog length
             if len(sequence) > max_length:
                 max_length = len(sequence)
 
-            training_data.append(sequence)
-
-        # get dialogs flow versions
-        for sample in training_data:
-            splited_seq, labels = split_to_sequences(sample)
-            x_train = x_train + splited_seq
+            x_train = x_train + splitted_seq
             y_train = y_train + labels
+
+        # Tokenize training set
+        x_train = tokenize_matrix(x_train, tokens=domain_tokens)
+        y_train = tokenize_matrix([y_train], tokens=domain_tokens)[0]  # get first element from list because of smaller dimension
 
         # pad sequences
         x_train = pad_sequences(x_train, maxlen=max_length-1, padding='post')
 
         print(x_train)
-        print(y_train)
+        print('Y: ', y_train)
 
         # reshape X to proper dimension [samples, timestamps ,features]
         x_train = np.reshape(x_train, (x_train.shape[0], x_train.shape[1], num_features))

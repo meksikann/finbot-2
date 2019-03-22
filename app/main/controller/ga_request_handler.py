@@ -10,7 +10,11 @@ def handle_qa_request(data):
     logger.info('Got request from GA.')
     # logger.info(data)
 
-    proceed, utterance, user_id, channel_id, channel_name = get_data_form_channel(data)
+    proceed, utterance, user_id, channel_id, channel_name, is_email_verification = get_data_form_channel(data)
+
+    # if email verification - return utterance
+    if is_email_verification:
+        return utterance
 
     # if no need to invoke predictor
     if proceed is False:
@@ -34,12 +38,14 @@ def get_data_form_channel(req):
     channel_id = None
     user_id = None
     proceed = False
+    is_email_verification = False
 
     # *******************************  slack connection ***********************************************************
     # slack event url testing
     if helper.check_key_exists(req, 'type') and req['type'] == 'url_verification':
         utterance = req['challenge']
         proceed = False
+        is_email_verification = True
     else:
         # receive user event from slack ------------>>>>>>>>>>
         if helper.check_key_exists(req, 'event'):
@@ -62,7 +68,7 @@ def get_data_form_channel(req):
             proceed = True
             utterance = req['utterance']
 
-    return proceed, utterance, user_id, channel_id, channel_name
+    return proceed, utterance, user_id, channel_id, channel_name, is_email_verification
 
 
 def process_next_user_action(utterance, user_id='1234'):
