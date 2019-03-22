@@ -1,5 +1,6 @@
 from os.path import join, dirname
 import numpy as np
+import tensorflow as tf
 
 from tensorflow.python.keras.preprocessing.sequence import pad_sequences
 from tensorflow.python.keras.preprocessing.text import Tokenizer
@@ -139,20 +140,18 @@ def train_dialog_model():
         # pad sequences
         x_train = pad_sequences(x_train, maxlen=max_length-1, padding='post')
 
-        print(x_train)
-        print('Y: ', y_train)
-
-        # reshape X to proper dimension [samples, timestamps ,features]
-        x_train = np.reshape(x_train, (x_train.shape[0], x_train.shape[1], num_features))
+        # one hot encode Y
+        print('domain tokens length:', len(domain_tokens))
+        y_train = tf.one_hot(y_train, len(domain_tokens))
 
         # get LSTM model --------------------------------------------------------------------------->>>>>>>>>>>>
-        model = helper.create_dialog_network(max_length - 1, num_features)
-        model.compile(loss='mse', optimizer='adam')
+        model = helper.create_dialog_network(max_length - 1, len(domain_tokens))
+        model.compile(loss='categorical_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
 
         model.summary()
 
         # fit model
-        model.fit(x_train, y_train, epochs=num_epochs, batch_size=num_features, verbose=1)
+        model.fit(x_train, y_train, epochs=num_epochs,  verbose=1, steps_per_epoch=2)
 
         # save model
         helper.save_dialog_model(model)

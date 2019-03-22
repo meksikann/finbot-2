@@ -46,29 +46,37 @@ def predict_intent(utterance):
 def predict_action(domain_tokens, maxlen, num_features, sequence):
     logger.info('================>>>>>>>>>>>>>>>> START DIALOG FLOW PREDICTION <<<<<<<<<<<<<<<<<=============')
     try:
+        min_confidence = constants.THRASHOLD
         # prepare test data
         x_test = np.array(sequence)
         x_test = pad_sequences([x_test],  maxlen=maxlen, padding='post')
-        x_test = np.reshape(x_test, (1, x_test.shape[1], num_features))
+        # x_test = np.reshape(x_test, (1, x_test.shape[1], num_features))
 
         # get model
-        model = helper.create_dialog_network(maxlen, num_features)
+        model = helper.create_dialog_network(maxlen, len(domain_tokens))
 
         # load weights
         model = helper.load_dm_model_weights(model)
 
         # reset model states
         # model.reset_states()
+        print('X_test: ', x_test)
 
         pred = model.predict(x_test, verbose=1)
-        # get array with domain_tokens values
-        tokens = []
-        for key, val in domain_tokens.items():
-            tokens.append(val)
+        # predicted_class = helper.get_predicted_class(min_confidence, pred, domain_tokens)
+        max_score_index = np.argmax(pred)
 
-        # get closer value form list
-        pred = helper.get_closes_value(tokens, pred[0][0])
-        return pred
+
+        # # get array with domain_tokens values
+        # tokens = []
+        for key, val in domain_tokens.items():
+            if val == max_score_index:
+                class_predicted = key
+                break
+        print('predicted------->>>>>>>', class_predicted)
+        # # get closer value form list
+        # pred = helper.get_closes_value(tokens, pred[0][0])
+        return max_score_index
     except Exception as err:
         logger.error(err)
         raise err

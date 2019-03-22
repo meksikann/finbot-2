@@ -184,10 +184,13 @@ def get_dialog_flow_data():
     return dialog
 
 
-def create_dialog_network(time_steps, num_features):
+def create_dialog_network(time_steps, classes_num):
+    vocab_size = 100
+    vec_size = 50
     model = Sequential()
-    model.add(layers.LSTM(20, activation='relu', input_shape=(time_steps, num_features)))
-    model.add(layers.Dense(1))
+    model.add(layers.Embedding(vocab_size, vec_size, input_length=time_steps))
+    model.add(layers.LSTM(vec_size, dropout=0.2, recurrent_dropout=0.2))
+    model.add(layers.Dense(classes_num,  activation='softmax'))
 
     return model
 
