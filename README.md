@@ -1,16 +1,22 @@
-## finance-bot
-##### the demo-bot for managing your personal income and spendings
+## Finance-bot
+##### Demo-bot to manage your personal income and spendings
 
 
-Use python 3.5 virtual env
-0. Install deps* ``pip install -r requirements.txt``
+###### Use python 3.5 virtual env
+- install deps* ``pip install -r requirements.txt``
 - download GLOVE from  https://nlp.stanford.edu/projects/glove/ unzip and paste glove.6B.100d.txt in ``app/main/ai/data/glove`` 
-- Install redis-server on Ubuntu ``sudo apt install redis-server``
-- Start redis server ``sudo systemctl start redis``
-- To run tests ``python manage.py test``
-- Train nlu model ``python manage.py train_nlu``
-- Train dialog model ``python manage.py train_dialog`` 
-- Run server ``python manage.py run``
+- training data path for NLU - ``app/main/ai/data/intents.json`` 
+- train nlu model run ``python manage.py train_nlu``
+- training data path for Dialog Management - ``app/main/ai/data/dialogs.yaml`` 
+- train dialog model ``python manage.py train_dialog`` 
+- paste slack credentials ``app/main/ai/creds/credentials.yaml``  it will remove ``dialog_state.pkl``
+  ```
+  slack:
+    slack_token: "slack-token-goes-here"
+    ```
+- run server ``python manage.py run`` , port 8282
+- to restart Dialog state tracker run: ``python manage.py restart_predictor``
 
-- For local testing use ngrok ``./ngrok http 8282 -host-header="localhost:8282"  ``
+- for local testing use ngrok ``./ngrok http 8282 -host-header="localhost:8282"  ``
+- to use bot in slack - create slack app https://api.slack.com/slack-apps (don't forget include ngrko generated url in slack Event subscriptions and Interactive components) 
 
