@@ -1,0 +1,22 @@
+{
+  "conversation_token": "42",
+  "expect_user_response": false,
+
+  "expected_inputs": [
+    {
+      "input_prompt": {
+        "initial_prompts": [
+          {
+            "text_to_speech": "Have a great day"
+          }
+        ],
+        "no_input_prompts": []
+      },
+      "possible_intents": [
+        {
+          "intent": "assistant.intent.action.TEXT"
+        }
+      ]
+    }
+  ]
+}

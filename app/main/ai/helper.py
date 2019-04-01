@@ -21,6 +21,9 @@ DIALOG_STATE_PATH = join(dirname(__file__), 'data', constants.DIALOG_STATE_PATH)
 DIALOG_PATH = join(dirname(__file__), 'data', constants.DIALOG_PATH)
 CREDS_PATH = join(dirname(__file__), 'creds', constants.CREDS_PATH)
 DOMAIN_PATH = join(dirname(__file__), constants.DOMAIN_PATH)
+CASUAL_RESPONSE = join(dirname(__file__), '../answer_templates', constants.CASUAL_RESPONSE)
+START_RESPONSE = join(dirname(__file__), '../answer_templates', constants.START_RESPONSE)
+STOP_RESPONSE = join(dirname(__file__), '../answer_templates', constants.STOP_RESPONSE)
 
 """************************************** NEURAL NETS *****************************************************"""
 
@@ -304,3 +307,18 @@ def clear_prediction_data():
         os.remove(DIALOG_STATE_PATH)
     except FileNotFoundError as err:
         logger.info('{} was already removed.'.format(DIALOG_STATE_PATH))
+
+
+def generate_ga_answer_template(data={}, action_type=None):
+    if action_type == constants.NEW:
+        res = json.loads(open(START_RESPONSE).read())
+    elif action_type == constants.ACTIVE:
+        text = {
+            "text_to_speech": data['text']
+        }
+        res = json.loads(open(CASUAL_RESPONSE).read())
+        res['expected_inputs'][0]['input_prompt']['initial_prompts'] = [text]
+    else:
+        res = json.loads(open(STOP_RESPONSE).read())
+
+    return res

@@ -8,7 +8,7 @@ def handle_qa_request(data):
     """handle request from Google assistant: call prediction services to generate next bot response"""
 
     logger.info('Got request from GA.')
-    # logger.info(data)
+    logger.info(data)
 
     proceed, utterance, user_id, channel_id, channel_name, is_email_verification = get_data_form_channel(data)
 
@@ -18,6 +18,10 @@ def handle_qa_request(data):
 
     # if no need to invoke predictor
     if proceed is False:
+        if channel_name == constants.GOOGLE_ASSISTANT:
+            # return start dialog template
+            return helper.generate_ga_answer_template(action_type=constants.NEW)
+
         return ''
 
     next_user_action = process_next_user_action(utterance, user_id)
@@ -26,13 +30,15 @@ def handle_qa_request(data):
     if channel_name == constants.SLACK:
         helper.post_slack_message(next_user_action['text'], channel_id)
         return ''
+    elif channel_name == constants.GOOGLE_ASSISTANT:
+        return helper.generate_ga_answer_template({'text': next_user_action['text']}, action_type=constants.ACTIVE)
 
     return next_user_action['text']
 
 
 def get_data_form_channel(req):
     """define the channel and extract data for predictor"""
-    print(req)
+
     utterance = ''
     channel_name = None
     channel_id = None
@@ -63,6 +69,20 @@ def get_data_form_channel(req):
                     channel_id = req['event']['channel']
                     channel_name = constants.SLACK
                     proceed = True
+        elif req['requestType'] == constants.SIMULATOR:
+            # get data from google assistant
+            logger.info('Get data from Google assistant simulator')
+
+            channel_name = constants.GOOGLE_ASSISTANT
+            user_id = req['user']['userId']
+            channel_id = req['conversation']['conversationId']
+
+            # do not proceed with dialog prediction when google assistant dialog start occurred
+            if req['conversation']['type'] == constants.NEW:
+                proceed = False
+            elif req['conversation']['type'] == constants.ACTIVE:
+                proceed = True
+                utterance = req.get('inputs', [])[0].get('rawInputs', [])[0].get('query')
         # receive event from postman ------------>>>>>>>>>>
         else:
             proceed = True

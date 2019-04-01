@@ -1,0 +1,32 @@
+{
+  "conversation_token": "42",
+  "expect_user_response": true,
+
+  "expected_inputs": [
+    {
+      "input_prompt": {
+        "initial_prompts": [
+          {
+            "text_to_speech": "Ok Man. I am just at the beginning of the development."
+          }
+        ],
+        "no_input_prompts": [
+          {
+            "text_to_speech": "I don't understand"
+          },
+          {
+            "text_to_speech": "I don't get your point"
+          },
+          {
+            "text_to_speech": "It's not clear for me"
+          }
+        ]
+      },
+      "possible_intents": [
+        {
+          "intent": "assistant.intent.action.TEXT"
+        }
+      ]
+    }
+  ]
+}

@@ -9,3 +9,4 @@ env-8/*
 *.xml
 /.idea/inspectionProfiles/Project_Default.xml
 /app/main/ai/creds
+*.data

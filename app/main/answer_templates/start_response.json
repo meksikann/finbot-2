@@ -1,0 +1,29 @@
+{
+  "conversation_token": "42",
+  "expect_user_response": true,
+
+  "expected_inputs": [
+    {
+      "input_prompt": {
+        "initial_prompts": [
+          {
+            "text_to_speech": "Hi. My name is Jarvis"
+          }
+        ],
+        "no_input_prompts": [
+          {
+            "text_to_speech": "Hola my friend. How may I help you?"
+          },
+          {
+            "text_to_speech": "Hello.I am ready to help"
+          }
+        ]
+      },
+      "possible_intents": [
+        {
+          "intent": "assistant.intent.action.TEXT"
+        }
+      ]
+    }
+  ]
+}

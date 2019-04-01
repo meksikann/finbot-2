@@ -1,0 +1,45 @@
+{
+  "actions": [
+    {
+      "description": "Default Welcome Intent",
+      "name": "MAIN",
+      "fulfillment": {
+        "conversationName": "jarvis robot"
+      },
+      "intent": {
+        "name": "actions.intent.MAIN",
+        "trigger": {
+          "queryPatterns": [
+            "talk to jarvis robot"
+          ]
+        }
+      }
+    },
+ {
+        "description": "Jarvis Intent",
+        "name": "TEXT",
+        "fulfillment": {
+          "conversationName": "jarvis_intent"
+        },
+        "intent": {
+          "name": "actions.intent.TEXT",
+          "trigger": {
+            "queryPatterns":[]
+          }
+        }
+      }
+  ],
+  "conversations": {
+    "jarvis robot": {
+      "name": "jarvis robot",
+      "url": "https://83732148.ngrok.io/google_home/webhook",
+      "fulfillmentApiVersion": 2
+    },
+    "jarvis_intent": {
+        "name": "jarvis_intent",
+        "url": "https://83732148.ngrok.io/google_home/webhook",
+        "fulfillmentApiVersion": 2
+    }
+  },
+  "locale": "en"
+}
