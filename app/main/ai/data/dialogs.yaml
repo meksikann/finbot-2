@@ -21,12 +21,24 @@ dialogs:
 - flow: # thanks
   - intent_thanks
   - utter_my_pleasure
+  - intent_greeting
+  - utter_how_can_help
+  - intent_help
+  - utter_help_info
+  - intent_get_spend_planned
+  - utter_spend_planned
 
 - flow: # goodbye
   - intent_goodbye
   - utter_goodbye
+  - intent_greeting
+  - utter_how_can_help
+  - intent_help
+  - utter_help_info
+  - intent_get_spend_planned
+  - utter_spend_planned
 
-- flow:  # greeting
+- flow:  # greeting 001
   - intent_greeting
   - utter_how_can_help
   - intent_help
@@ -48,6 +60,54 @@ dialogs:
   - intent_goodbye
   - utter_goodbye
 
-- flow:  # greeting
+- flow:  # greeting 002
+  - intent_greeting
+  - utter_how_can_help
   - intent_help
   - utter_help_info
+  - intent_get_spend_planned
+  - utter_spend_planned
+  - intent_affirm
+  - utter_affirm
+  - intent_thanks
+  - utter_my_pleasure
+
+- flow:  # greeting 003
+  - intent_greeting
+  - utter_how_can_help
+  - intent_help
+  - utter_help_info
+  - intent_affirm
+  - utter_affirm
+  - intent_goodbye
+  - utter_goodbye
+
+- flow:  # greeting 004
+  - intent_greeting
+  - utter_how_can_help
+  - intent_help
+  - intent_get_spend_planned
+  - utter_spend_planned
+  - intent_affirm
+  - utter_affirm
+  - intent_thanks
+  - utter_my_pleasure
+
+- flow:  # greeting 005
+  - intent_greeting
+  - utter_how_can_help
+  - intent_help
+  - intent_new_buy
+  - utter_ask_price
+  - intent_inform
+  - utter_cannot_buy
+  - intent_goodbye
+  - utter_goodbye
+
+- flow:  # greeting 006
+  - intent_greeting
+  - utter_how_can_help
+  - intent_get_spent
+  - utter_spent
+  - intent_thanks
+  - utter_my_pleasure

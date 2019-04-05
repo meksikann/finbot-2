@@ -4,13 +4,13 @@
       "description": "Default Welcome Intent",
       "name": "MAIN",
       "fulfillment": {
-        "conversationName": "jarvis robot"
+        "conversationName": "finance mate"
       },
       "intent": {
         "name": "actions.intent.MAIN",
         "trigger": {
           "queryPatterns": [
-            "talk to jarvis robot"
+            "talk to finance mate"
           ]
         }
       }
@@ -30,14 +30,14 @@
       }
   ],
   "conversations": {
-    "jarvis robot": {
-      "name": "jarvis robot",
-      "url": "https://83732148.ngrok.io/google_home/webhook",
+    "finance mate": {
+      "name": "finance mate",
+      "url": "https://cf4879ec.ngrok.io/google_home/webhook",
       "fulfillmentApiVersion": 2
     },
     "jarvis_intent": {
         "name": "jarvis_intent",
-        "url": "https://83732148.ngrok.io/google_home/webhook",
+        "url": "https://cf4879ec.ngrok.io/google_home/webhook",
         "fulfillmentApiVersion": 2
     }
   },

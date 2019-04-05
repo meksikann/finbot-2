@@ -102,7 +102,7 @@ def train_dialog_model():
     y_train = []
     max_length = 1
     num_features = 1
-    num_epochs = 200
+    num_epochs = 500
 
     try:
         #

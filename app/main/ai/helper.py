@@ -29,8 +29,8 @@ STOP_RESPONSE = join(dirname(__file__), '../answer_templates', constants.STOP_RE
 
 
 def create_dialog_network(time_steps, classes_num):
-    vocab_size = 100
-    vec_size = 50
+    vocab_size = 60
+    vec_size = 20
     model = Sequential()
     model.add(layers.Embedding(vocab_size, vec_size, input_length=time_steps))
     model.add(layers.LSTM(vec_size, dropout=0.2, recurrent_dropout=0.2))

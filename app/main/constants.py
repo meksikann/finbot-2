@@ -22,4 +22,3 @@ GOOGLE_ASSISTANT = 'google_assistant'
 CASUAL_RESPONSE = 'casual_response.json'
 START_RESPONSE = 'start_response.json'
 STOP_RESPONSE = 'stop_response.json'
-
