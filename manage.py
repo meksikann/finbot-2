@@ -4,9 +4,10 @@ import unittest
 from flask_script import Manager
 
 from app.main import create_app
-from app.main.utils import logger, redis
+from app.main.utils import logger
 from app.main.ai import trainer
 from app.main.ai import predictor
+from app.main.controller import starter
 
 app = create_app(os.getenv('CUSTOM_ENV') or 'dev')
 
@@ -53,6 +54,13 @@ def restart_predictor():
 
     logger.info('Command: restart predictor: remove dialog_state.pkl')
     predictor.restart_predictor()
+
+
+@manager.command
+def start_desktop_voice_assistant():
+    """Desktop voice assistant to uses machine mic"""
+    logger.info('Starting desktop voice assistant ...')
+    starter.start_desktop_voice_assistant()
 
 
 if __name__ == '__main__':

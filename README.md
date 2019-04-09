@@ -21,3 +21,7 @@
 - to use bot in slack - create slack app https://api.slack.com/slack-apps (don't forget include ngrko generated url in slack Event subscriptions and Interactive components) 
 
 submit gactions to google assistant: ``./gactions update --action_package action.json --project jarvis-1ebfb``
+
+
+### EXTRA feature - desktop voice assistant (python lib uses machine mic):
+pip install SpeechRecognition
